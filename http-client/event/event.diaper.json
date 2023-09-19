@@ -1,0 +1,26 @@
+{
+	"id": 4,
+	"extraFields": [
+		{
+			"name": "source",
+			"type": "checkbox",
+			"displayName": "原因",
+			"enums": [
+				"嘘嘘",
+				"放屁带的臭臭",
+				"少量臭臭",
+				"大量臭臭"
+			]
+		},
+		{
+			"name": "brand",
+			"type": "radio",
+			"displayName": "尿不湿品牌",
+			"enums": [
+				"bbc 皇家狮子王国",
+				"huggies 好奇"
+			],
+			"defaultValue": "bbc 皇家狮子王国"
+		}
+	]
+}

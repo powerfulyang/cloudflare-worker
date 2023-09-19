@@ -1,0 +1,19 @@
+### speech recognition (English)
+POST http://localhost:8787/api/speech-recognition
+Content-Type: audio/mpeg
+
+< ./en.mp3
+
+### speech recognition (Chinese)
+POST http://localhost:8787/api/speech-recognition
+Content-Type: audio/mpeg
+
+< ./zh.mp3
+
+### text generation
+POST http://localhost:8787/api/text-generation
+Content-Type: application/json
+
+{
+	"prompt": "感觉你没啥用"
+}

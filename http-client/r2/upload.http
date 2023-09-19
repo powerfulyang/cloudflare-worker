@@ -1,0 +1,14 @@
+POST {{origin}}/api/upload
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="play.jpeg"
+Content-Type: image/jpeg
+
+< ./play.jpeg
+--WebAppBoundary
+Content-Disposition: form-data; name="bucketName"
+Content-Type: text/plain
+
+test
+--WebAppBoundary

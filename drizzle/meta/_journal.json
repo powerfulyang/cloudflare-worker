@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1701935005050,
+      "tag": "0000_material_inertia",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1704708350154,
+      "tag": "0001_open_black_tom",
+      "breakpoints": true
+    }
+  ]
+}

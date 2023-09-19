@@ -1,0 +1,189 @@
+[
+	{
+		"id": 1,
+		"name": "Weigh",
+		"displayName": "称重",
+		"icon": "https://public-1253520329.cos.ap-shanghai.myqcloud.com/eleven-icons/weigh.jpeg",
+		"extraFields": [
+			{
+				"name": "weight",
+				"displayName": "体重(kg)",
+				"type": "number",
+				"userInput": true,
+				"required": true
+			}
+		],
+		"createdAt": "2023-12-06 17:20:28",
+		"updatedAt": "2023-12-06 17:20:28"
+	},
+	{
+		"id": 2,
+		"name": "Sleep",
+		"displayName": "睡眠",
+		"icon": "https://public-1253520329.cos.ap-shanghai.myqcloud.com/eleven-icons/sleep.jpeg",
+		"extraFields": [
+			{
+				"name": "endTime",
+				"displayName": "结束时间",
+				"type": "time",
+				"userInput": false,
+				"required": true
+			}
+		],
+		"createdAt": "2023-12-06 17:20:28",
+		"updatedAt": "2023-12-06 17:20:28"
+	},
+	{
+		"id": 3,
+		"name": "Feed",
+		"displayName": "喂养",
+		"icon": "https://public-1253520329.cos.ap-shanghai.myqcloud.com/eleven-icons/feed.jpeg",
+		"extraFields": [
+			{
+				"name": "endTime",
+				"displayName": "结束时间",
+				"type": "time",
+				"userInput": false,
+				"required": true
+			},
+			{
+				"name": "type",
+				"displayName": "喂养类型",
+				"type": "radio",
+				"enums": [
+					"左侧母乳",
+					"右侧母乳",
+					"奶粉"
+				],
+				"userInput": true,
+				"required": true
+			},
+			{
+				"name": "milkVolume",
+				"displayName": "奶量(ml)",
+				"type": "number",
+				"userInput": true,
+				"required": true,
+				"cascade": {
+					"fieldName": "type",
+					"fieldValue": "奶粉"
+				}
+			},
+			{
+				"name": "milkBrand",
+				"displayName": "奶粉品牌",
+				"type": "picker",
+				"userInput": true,
+				"required": true,
+				"cascade": {
+					"fieldName": "type",
+					"fieldValue": "奶粉"
+				}
+			}
+		],
+		"createdAt": "2023-12-06 17:20:28",
+		"updatedAt": "2023-12-06 17:20:28"
+	},
+	{
+		"id": 4,
+		"name": "Diaper",
+		"displayName": "换尿不湿",
+		"icon": "https://public-1253520329.cos.ap-shanghai.myqcloud.com/eleven-icons/diaper.jpeg",
+		"extraFields": [
+			{
+				"name": "source",
+				"displayName": "原因",
+				"type": "checkbox",
+				"enums": [
+					"嘘嘘",
+					"放屁带的臭臭",
+					"少量臭臭",
+					"大量臭臭"
+				],
+				"userInput": true,
+				"required": true
+			},
+			{
+				"name": "brand",
+				"displayName": "尿不湿品牌",
+				"type": "radio",
+				"enums": [
+					"bbc 皇家狮子王国",
+					"huggies 好奇"
+				],
+				"userInput": true,
+				"required": true,
+				"defaultValue": "bbc 皇家狮子王国"
+			}
+		],
+		"createdAt": "2023-12-06 17:20:28",
+		"updatedAt": "2023-12-06 17:20:28"
+	},
+	{
+		"id": 5,
+		"name": "Bath",
+		"displayName": "洗澡",
+		"icon": "https://public-1253520329.cos.ap-shanghai.myqcloud.com/eleven-icons/bath.jpeg",
+		"extraFields": [],
+		"createdAt": "2023-12-06 17:20:28",
+		"updatedAt": "2023-12-06 17:20:28"
+	},
+	{
+		"id": 6,
+		"name": "Outing",
+		"displayName": "外出",
+		"icon": "https://public-1253520329.cos.ap-shanghai.myqcloud.com/eleven-icons/outing.jpeg",
+		"extraFields": [
+			{
+				"name": "endTime",
+				"displayName": "结束时间",
+				"type": "time",
+				"userInput": false,
+				"required": true
+			}
+		],
+		"createdAt": "2023-12-06 17:20:28",
+		"updatedAt": "2023-12-06 17:20:28"
+	},
+	{
+		"id": 7,
+		"name": "Supplement",
+		"displayName": "补剂",
+		"icon": "/icons/vitamin.svg",
+		"extraFields": [
+			{
+				"name": "type",
+				"displayName": "类型",
+				"type": "checkbox",
+				"enums": [
+					"星鲨维生素D3",
+					"星鲨维生素AD",
+					"拜奥益生菌",
+					"琥珀酸亚铁缓释片0.2g (速力菲) (妈妈)",
+					"碳酸钙D3片 (钙尔奇) (妈妈)"
+				],
+				"userInput": true,
+				"required": true
+			}
+		],
+		"createdAt": "2023-12-06 17:20:28",
+		"updatedAt": "2023-12-06 17:20:28"
+	},
+	{
+		"id": 8,
+		"name": "Play",
+		"displayName": "玩耍",
+		"icon": "https://public-1253520329.cos.ap-shanghai.myqcloud.com/eleven-icons/play.jpeg",
+		"extraFields": [
+			{
+				"name": "endTime",
+				"displayName": "结束时间",
+				"type": "time",
+				"userInput": false,
+				"required": true
+			}
+		],
+		"createdAt": "2023-12-15 18:47:36",
+		"updatedAt": "2023-12-15 18:47:36"
+	}
+]

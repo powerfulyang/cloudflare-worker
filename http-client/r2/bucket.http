@@ -1,0 +1,11 @@
+### Create a bucket
+POST {{origin}}/api/bucket
+Content-Type: application/json
+
+{
+  "name": "test",
+  "domain": "test-r2.littleeleven.com"
+}
+
+### Query a bucket
+GET {{origin}}/api/bucket/test

@@ -1,0 +1,24 @@
+name = "service"
+main = "src/index.ts"
+compatibility_date = "2023-12-18"
+
+[triggers]
+crons = []
+
+[[d1_databases]]
+binding = "DB"
+database_name = "eleven"
+database_id = "99f20991-68ed-41cd-9784-ca820b8260b7"
+preview_database_name = "test"
+preview_database_id = "28f2f11b-85d5-4d63-92da-4eebb2ade8a4"
+
+[ai]
+binding = "AI"
+
+[placement]
+mode = "smart"
+
+[[r2_buckets]]
+binding = 'MY_BUCKET' # <~ valid JavaScript variable name
+bucket_name = 'eleven'
+preview_bucket_name = 'test'
