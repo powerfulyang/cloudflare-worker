@@ -1,0 +1,22 @@
+POST {{origin}}/api/baby
+Content-Type: application/json
+
+{
+  "name": "ELEVEN",
+  "avatar": 20,
+  "bornAt": "2023-10-05 16:23:00",
+  "gender": 0
+}
+
+### Get baby detail
+GET {{origin}}/api/baby/1
+
+
+### Update baby
+PATCH {{origin}}/api/baby
+Content-Type: application/json
+
+{
+  "id": 1,
+  "avatar": 21
+}

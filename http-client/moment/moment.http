@@ -1,0 +1,18 @@
+POST {{origin}}/api/moment
+Content-Type: application/json
+
+{
+    "content": "test"
+}
+
+### query moments
+GET {{origin}}/api/moment?page=1&pageSize=10
+
+### PUT moment
+PUT {{origin}}/api/moment
+Content-Type: application/json
+
+{
+    "id": 27,
+    "content": "test PUT #1"
+}

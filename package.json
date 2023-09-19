@@ -1,0 +1,44 @@
+{
+  "name": "little-eleven-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "start:local": "wrangler dev",
+    "generate:openapi": "curl http://localhost:8787/api/doc > ./openapi.json",
+    "start:remote": "wrangler dev --remote",
+    "generate:sql": "drizzle-kit generate:sqlite",
+    "login": "wrangler login",
+    "d1:create": "wrangler d1 create eleven",
+    "d1:execute": "wrangler d1 execute eleven --file ./drizzle/*.sql",
+    "d1:execute:local": "wrangler d1 execute eleven --local --file ./drizzle/*.sql",
+    "tsc-check": "tsc --noEmit",
+    "format": "dprint fmt"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240117.0",
+    "@types/jest": "^29.5.11",
+    "better-sqlite3": "^9.3.0",
+    "drizzle-kit": "^0.20.13",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.23.0"
+  },
+  "dependencies": {
+    "@cloudflare/ai": "^1.0.47",
+    "@hono/zod-openapi": "^0.9.5",
+    "@jsquash/webp": "^1.4.0",
+    "@silvia-odwyer/photon": "^0.3.2",
+    "dayjs": "^1.11.10",
+    "dprint": "^0.45.0",
+    "drizzle-orm": "^0.29.3",
+    "hono": "^3.12.6",
+    "jest": "^29.7.0",
+    "minimatch": "^9.0.3",
+    "zod-validation-error": "^3.0.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@silvia-odwyer/photon@0.3.2": "patches/@silvia-odwyer__photon@0.3.2.patch"
+    }
+  }
+}
