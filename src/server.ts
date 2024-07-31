@@ -38,7 +38,12 @@ const app = new OpenAPIHono<{
 app.use(
   '*',
   cors({
-    origin: 'https://littleeleven.com',
+    origin: (origin) => {
+      if (origin.endsWith('.littleeleven.com')) {
+        return origin;
+      }
+      return 'https://littleeleven.com';
+    },
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     exposeHeaders: ['authorization'],
     allowHeaders: ['authorization', 'content-type'],

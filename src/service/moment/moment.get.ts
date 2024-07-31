@@ -60,7 +60,7 @@ app.openapi(route, async (c) => {
     .leftJoin(momentsToUploads, eq(moment.id, momentsToUploads.momentId))
     .leftJoin(upload, eq(momentsToUploads.uploadId, upload.id))
     .leftJoin(bucket, eq(upload.bucketName, bucket.name))
-		.where(eq(moment.type, type))
+    .where(eq(moment.type, type))
     .orderBy(desc(moment.id), asc(momentsToUploads.order));
 
   if (page && pageSize) {
