@@ -1,5 +1,4 @@
-import { app } from '@/server';
-import { createRoute, z } from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi'
 
 const route = createRoute({
   path: '/api/hello/gemini-pro',
@@ -25,7 +24,7 @@ const route = createRoute({
       description: 'OK',
     },
   },
-});
+})
 
 /**
  * curl \
@@ -33,8 +32,8 @@ const route = createRoute({
  *   -d '{"contents":[{"parts":[{"text":"Write a story about a magic backpack"}]}]}' \
  *   -X POST https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=YOUR_API_KEY
  */
-app.openapi(route, async c => {
-  const json = c.req.valid('json');
+appServer.openapi(route, async (c) => {
+  const json = c.req.valid('json')
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${c.env.GEMINI_PRO_API_KEY}`,
     {
@@ -44,9 +43,9 @@ app.openapi(route, async c => {
         'Content-Type': 'application/json',
       },
     },
-  );
-  const result: any = await res.json();
+  )
+  const result: any = await res.json()
   return c.json({
     result: result.candidates[0].content.parts[0].text,
-  });
-});
+  })
+})

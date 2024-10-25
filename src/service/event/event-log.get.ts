@@ -1,11 +1,11 @@
-import { app } from '@/server';
-import { EventLogResultSchema } from '@/service/event/schemas/event-log';
-import { convertDateToString } from '@/utils/formatDatetime';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { and, desc, eq, SQL, sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/d1';
-import { event, eventLog } from '~drizzle/schema';
+import type { SQL } from 'drizzle-orm'
+import { EventLogResultSchema } from '@/service/event/schemas/event-log'
+import { convertDateToString } from '@/utils/formatDatetime'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute, z } from '@hono/zod-openapi'
+import { event, eventLog } from '~drizzle/schema'
+import { and, desc, eq, sql } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/d1'
 
 const eventLogGet = createRoute({
   method: 'get',
@@ -37,45 +37,45 @@ const eventLogGet = createRoute({
       },
     ),
   },
-  responses: CommonJSONResponse(z.array(EventLogResultSchema)),
-});
+  responses: JsonResponse(z.array(EventLogResultSchema)),
+})
 
-app.openapi(eventLogGet, async (c) => {
-  const { date, eventName } = c.req.valid('query');
-  const db = drizzle(c.env.DB);
-  const where: SQL[] = [];
+appServer.openapi(eventLogGet, async (c) => {
+  const { date, eventName } = c.req.valid('query')
+  const db = drizzle(c.env.DB)
+  const where: SQL[] = []
   if (date) {
     where.push(
       eq(sql`DATE(${eventLog.eventTime} / 1000, 'unixepoch','+8 hours')`, date),
-    );
+    )
   }
   if (eventName) {
-    where.push(eq(eventLog.eventName, eventName));
+    where.push(eq(eventLog.eventName, eventName))
   }
   const logs = await db
     .select()
     .from(eventLog)
     .where(and(...where))
     .orderBy(desc(eventLog.eventTime))
-    .all();
+    .all()
 
   const events = await db
     .select()
     .from(event)
-    .all();
+    .all()
 
-  const helperMap = new Map<string, any>();
+  const helperMap = new Map<string, any>()
   for (const event of events) {
-    helperMap.set(event.name, convertDateToString(event));
+    helperMap.set(event.name, convertDateToString(event))
   }
 
   const result = logs.map((log) => {
-    const event = helperMap.get(log.eventName);
+    const event = helperMap.get(log.eventName)
     return {
       ...log,
       event,
-    };
-  });
+    }
+  })
 
-  return c.json(convertDateToString(result));
-});
+  return c.json(convertDateToString(result))
+})

@@ -1,4 +1,4 @@
-import './moment.post';
-import './moment.get';
-import './moment.delete';
-import './moment.put';
+import './moment.post'
+import './moment.get'
+import './moment.delete'
+import './moment.put'

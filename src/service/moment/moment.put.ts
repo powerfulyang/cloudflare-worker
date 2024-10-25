@@ -1,12 +1,11 @@
-import { app } from '@/server';
-import { momentSchema } from '@/service/moment/moment.post';
-import { uploadSchema } from '@/service/r2/upload.post';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { asc, eq, inArray } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/d1';
-import { moment, momentsToUploads } from '~drizzle/schema/moment';
-import { upload } from '~drizzle/schema/upload';
+import { momentSchema } from '@/service/moment/moment.post'
+import { uploadSchema } from '@/service/r2/upload.post'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute, z } from '@hono/zod-openapi'
+import { moment, momentsToUploads } from '~drizzle/schema/moment'
+import { upload } from '~drizzle/schema/upload'
+import { asc, eq, inArray } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/d1'
 
 const momentPutSchema = momentSchema
   .pick({ content: true, id: true })
@@ -18,7 +17,7 @@ const momentPutSchema = momentSchema
         .default([]),
     }),
   )
-  .openapi('MomentPutRequest');
+  .openapi('MomentPutRequest')
 
 const route = createRoute({
   method: 'put',
@@ -33,19 +32,19 @@ const route = createRoute({
       },
     },
   },
-  responses: CommonJSONResponse(momentSchema),
-});
+  responses: JsonResponse(momentSchema),
+})
 
-app.openapi(route, async (c) => {
-  const { content, attachments, id } = c.req.valid('json');
+appServer.openapi(route, async (c) => {
+  const { content, attachments, id } = c.req.valid('json')
 
-  const db = drizzle(c.env.DB);
+  const db = drizzle(c.env.DB)
   const momentResult = await db
     .update(moment)
     .set({ content })
     .where(eq(moment.id, id))
     .returning()
-    .get();
+    .get()
 
   // TODO: transaction with rollback
 
@@ -53,31 +52,31 @@ app.openapi(route, async (c) => {
     momentId: momentResult.id,
     uploadId: attachment.id,
     order: index,
-  }));
+  }))
 
-  const result: any = momentResult;
+  const result: any = momentResult
 
   // delete all momentsToUploads where momentId = id
   await db
     .delete(momentsToUploads)
-    .where(eq(momentsToUploads.momentId, id));
+    .where(eq(momentsToUploads.momentId, id))
 
   if (toInsert.length) {
     await db
       .insert(momentsToUploads)
       .values(toInsert)
-      .execute();
+      .execute()
 
     const res = await db
       .select()
       .from(upload)
       .leftJoin(momentsToUploads, eq(upload.id, momentsToUploads.uploadId))
       .orderBy(asc(momentsToUploads.order))
-      .where(inArray(upload.id, attachments.map((a) => a.id)))
-      .all();
+      .where(inArray(upload.id, attachments.map(a => a.id)))
+      .all()
 
-    result.attachments = res.map((r) => r.upload);
+    result.attachments = res.map(r => r.upload)
   }
 
-  return c.json(result);
-});
+  return c.json(result)
+})

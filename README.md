@@ -2,17 +2,19 @@
 
 ## 介绍
 
-本教程将带你从零开始，一步步学习如何使用 Cloudflare Workers 搭建一个属于自己的网站。
+本教程将带你从零开始，一步步学习如何使用 Cloudflare Workers 开发专属于你的 API 服务。
 
 ## 安装依赖
 
+推荐使用 `pnpm` 安装依赖
+
 ```bash
-npm install
+pnpm install
 ```
 
 ### 配置 wrangler
 
-设置 `wrangler.toml` 中 d1_database 字段为你的数据库相关信息
+设置 `wrangler.toml` 中 d1_database 字段为你的数据库相关信息 (**必须**)
 具体内容类似下面：
 
 ```toml
@@ -22,7 +24,7 @@ database_name = "<database-name>"
 database_id = "<database-id>"
 ```
 
-设置 AI worker
+设置 AI worker (**非必须**)
 
 ```toml
 [ai]
@@ -33,11 +35,7 @@ binding = "AI"
 
 > 相关文档: https://developers.cloudflare.com/workers/wrangler/commands/#d1
 
-- 创建数据库, 执行 `npm run d1:create`
-
-```bash
-wrangler d1 create <database-name>
-```
+### 开启本地开发
 
 - 执行 SQL 语句, 执行 `npm run d1:execute`
 

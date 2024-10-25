@@ -1,16 +1,15 @@
-import { app } from '@/server';
-import { uploadSchema } from '@/service/r2/upload.post';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { drizzle } from 'drizzle-orm/d1';
-import { baby } from '~drizzle/schema/baby';
+import { uploadSchema } from '@/service/r2/upload.post'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute, z } from '@hono/zod-openapi'
+import { baby } from '~drizzle/schema/baby'
+import { drizzle } from 'drizzle-orm/d1'
 
 export const babySchema = z.object({
   name: z.string(),
   avatar: uploadSchema,
   gender: z.number().int(),
   bornAt: z.string(),
-});
+})
 
 const route = createRoute({
   path: '/api/baby',
@@ -29,18 +28,18 @@ const route = createRoute({
       },
     },
   },
-  responses: CommonJSONResponse(z.any()),
-});
+  responses: JsonResponse(z.any()),
+})
 
-app.openapi(route, async (c) => {
-  const json = c.req.valid('json');
-  const db = drizzle(c.env.DB);
+appServer.openapi(route, async (c) => {
+  const json = c.req.valid('json')
+  const db = drizzle(c.env.DB)
 
   const result = await db
     .insert(baby)
     .values(json)
     .returning()
-    .get();
+    .get()
 
-  return c.json(result);
-});
+  return c.json(result)
+})

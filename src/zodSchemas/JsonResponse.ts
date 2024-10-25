@@ -1,6 +1,6 @@
-import { InternalServerError } from '@/zodSchemas/InternalServerError';
+import { InternalServerError } from '@/zodSchemas/InternalServerError'
 
-export const CommonJSONResponse = <T>(schema: T) => {
+export function JsonResponse<T>(schema: T) {
   return {
     200: {
       description: 'OK',
@@ -11,5 +11,5 @@ export const CommonJSONResponse = <T>(schema: T) => {
       },
     },
     500: InternalServerError,
-  };
-};
+  }
+}

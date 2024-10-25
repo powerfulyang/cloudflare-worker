@@ -1,7 +1,6 @@
-import { app } from '@/server';
-import { compressImage } from '@/utils/compressImage';
-import { createRoute, z } from '@hono/zod-openapi';
-import { stream } from 'hono/streaming';
+import { compressImage } from '@/utils/compressImage'
+import { createRoute, z } from '@hono/zod-openapi'
+import { stream } from 'hono/streaming'
 
 const route = createRoute({
   method: 'post',
@@ -23,17 +22,17 @@ const route = createRoute({
       description: 'Success',
     },
   },
-});
+})
 
-app.openapi(route, async (c) => {
-  const { file } = c.req.valid('form');
-  const buffer = await compressImage(file);
+appServer.openapi(route, async (c) => {
+  const { file } = c.req.valid('form')
+  const buffer = await compressImage(file)
   if (!buffer) {
-    throw new Error('compress fail');
+    throw new Error('compress fail')
   }
   return stream(c, async (_) => {
-    c.header('Content-Type', 'image/webp');
-    await _.write(new Uint8Array(buffer));
-    await _.close();
-  });
-});
+    c.header('Content-Type', 'image/webp')
+    await _.write(new Uint8Array(buffer))
+    await _.close()
+  })
+})

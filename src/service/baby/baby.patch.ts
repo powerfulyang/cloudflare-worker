@@ -1,10 +1,9 @@
-import { app } from '@/server';
-import { babySchema } from '@/service/baby/baby.post';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/d1';
-import { baby } from '~drizzle/schema/baby';
+import { babySchema } from '@/service/baby/baby.post'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute, z } from '@hono/zod-openapi'
+import { baby } from '~drizzle/schema/baby'
+import { eq } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/d1'
 
 const route = createRoute({
   path: '/api/baby',
@@ -26,19 +25,19 @@ const route = createRoute({
       },
     },
   },
-  responses: CommonJSONResponse(z.any()),
-});
+  responses: JsonResponse(z.any()),
+})
 
-app.openapi(route, async (c) => {
-  const json = c.req.valid('json');
-  const db = drizzle(c.env.DB);
+appServer.openapi(route, async (c) => {
+  const json = c.req.valid('json')
+  const db = drizzle(c.env.DB)
 
   const result = await db
     .update(baby)
     .set(json)
     .where(eq(baby.id, json.id))
     .returning()
-    .get();
+    .get()
 
-  return c.json(result);
-});
+  return c.json(result)
+})

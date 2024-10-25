@@ -1,11 +1,11 @@
-import { app } from '@/server';
-import { EventSchema } from '@/service/event/schemas/event';
-import { EventLogSchema } from '@/service/event/schemas/event-log';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { and, eq, SQL, sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/d1';
-import { event, eventLog } from '~drizzle/schema';
+import type { SQL } from 'drizzle-orm'
+import { EventSchema } from '@/service/event/schemas/event'
+import { EventLogSchema } from '@/service/event/schemas/event-log'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute, z } from '@hono/zod-openapi'
+import { event, eventLog } from '~drizzle/schema'
+import { and, eq, sql } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/d1'
 
 const route = createRoute({
   method: 'get',
@@ -15,7 +15,8 @@ const route = createRoute({
       {
         date: z
           .string()
-          .optional().openapi(
+          .optional()
+          .openapi(
             {
               format: 'date',
               param: {
@@ -28,7 +29,7 @@ const route = createRoute({
       },
     ),
   },
-  responses: CommonJSONResponse(
+  responses: JsonResponse(
     z.array(
       EventSchema
         .pick(
@@ -49,16 +50,16 @@ const route = createRoute({
         .openapi('EventLogDistinctResult'),
     ),
   ),
-});
+})
 
-app.openapi(route, async (c) => {
-  const { date } = c.req.valid('query');
-  const db = drizzle(c.env.DB);
-  const where: SQL[] = [];
+appServer.openapi(route, async (c) => {
+  const { date } = c.req.valid('query')
+  const db = drizzle(c.env.DB)
+  const where: SQL[] = []
   if (date) {
     where.push(
       eq(sql`DATE(${eventLog.eventTime} / 1000, 'unixepoch','+8 hours')`, date),
-    );
+    )
   }
   const result = await db
     .select({
@@ -70,7 +71,7 @@ app.openapi(route, async (c) => {
     .leftJoin(event, eq(event.name, eventLog.eventName))
     .where(and(...where))
     .groupBy(eventLog.eventName)
-    .all();
+    .all()
 
-  return c.json(result);
-});
+  return c.json(result)
+})

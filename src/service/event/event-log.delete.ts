@@ -1,9 +1,8 @@
-import { app } from '@/server';
-import { InternalServerError } from '@/zodSchemas/InternalServerError';
-import { createRoute, z } from '@hono/zod-openapi';
-import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/d1';
-import { eventLog } from '~drizzle/schema';
+import { InternalServerError } from '@/zodSchemas/InternalServerError'
+import { createRoute, z } from '@hono/zod-openapi'
+import { eventLog } from '~drizzle/schema'
+import { eq } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/d1'
 
 const eventLogDelete = createRoute({
   method: 'delete',
@@ -27,15 +26,15 @@ const eventLogDelete = createRoute({
     },
     500: InternalServerError,
   },
-});
+})
 
-app.openapi(eventLogDelete, async (c) => {
-  const { id } = c.req.valid('param');
-  const db = drizzle(c.env.DB);
+appServer.openapi(eventLogDelete, async (c) => {
+  const { id } = c.req.valid('param')
+  const db = drizzle(c.env.DB)
   await db
     .delete(eventLog)
     .where(eq(eventLog.id, Number(id)))
-    .execute();
+    .execute()
 
-  return c.newResponse(null, 204);
-});
+  return c.newResponse(null, 204)
+})

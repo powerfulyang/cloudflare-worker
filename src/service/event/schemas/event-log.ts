@@ -1,5 +1,5 @@
-import { EventSchema } from '@/service/event/schemas/event';
-import { z } from '@hono/zod-openapi';
+import { EventSchema } from '@/service/event/schemas/event'
+import { z } from '@hono/zod-openapi'
 
 export const EventLogSchema = z.object(
   {
@@ -25,7 +25,7 @@ export const EventLogSchema = z.object(
       }),
   },
 )
-  .openapi('EventLog');
+  .openapi('EventLog')
 
 export const EventLogResultSchema = z.object(
   {
@@ -33,4 +33,4 @@ export const EventLogResultSchema = z.object(
   },
 )
   .merge(EventLogSchema)
-  .openapi('EventLogResult');
+  .openapi('EventLogResult')

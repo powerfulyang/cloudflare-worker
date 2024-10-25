@@ -1,26 +1,58 @@
-import { app } from '@/server';
-import { Ai, modelMappings } from '@cloudflare/ai';
-import { AiTextGenerationInput } from '@cloudflare/ai/dist/tasks/text-generation';
+import type { AiTextGenerationInput } from '@cloudflare/workers-types'
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 
-app.post('/api/speech-recognition', async c => {
-  const ai = new Ai(c.env.AI);
-  const blob = await c.req.arrayBuffer();
-  const inputs = {
-    audio: Array.from(new Uint8Array(blob)),
-  };
-  const response = await ai.run(
-    modelMappings['speech-recognition'].models[0],
-    inputs,
-  );
-  return c.json({ response });
-});
+const AiRoute = new OpenAPIHono<{
+  Bindings: Bindings
+}>()
 
-app.post('/api/text-generation', async c => {
-  const ai = new Ai(c.env.AI);
-  const inputs: AiTextGenerationInput = await c.req.json();
+const textGenerationRoute = createRoute({
+  method: 'post',
+  path: '/text-generation',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            prompt: z.string(),
+            messages: z.array(z.object({
+              role: z.enum(['user', 'assistant']),
+              content: z.string(),
+            })).optional(),
+            max_tokens: z.number().optional(),
+            temperature: z.number().min(0).max(1).optional(),
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Success',
+      content: {
+        'application/json': {
+          schema: z.object({
+            response: z.string().optional(),
+          }),
+        },
+      },
+    },
+  },
+})
+
+AiRoute.openapi(textGenerationRoute, async (c) => {
+  const ai = c.env.AI
+  const inputs: AiTextGenerationInput = c.req.valid('json')
   const response = await ai.run(
-    modelMappings['text-generation'].models[0],
+    '@hf/google/gemma-7b-it',
     inputs,
-  );
-  return c.json({ response });
-});
+  )
+  let msg
+  if ('response' in response) {
+    msg = response.response
+  }
+  return c.json({
+    response: msg,
+  })
+})
+
+export default AiRoute

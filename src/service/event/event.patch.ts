@@ -1,11 +1,10 @@
-import { app } from '@/server';
-import { EventSchema } from '@/service/event/schemas/event';
-import { convertDateToString } from '@/utils/formatDatetime';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/d1';
-import { event } from '~drizzle/schema';
+import { EventSchema } from '@/service/event/schemas/event'
+import { convertDateToString } from '@/utils/formatDatetime'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute, z } from '@hono/zod-openapi'
+import { event } from '~drizzle/schema'
+import { eq } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/d1'
 
 const EventPatchSchema = EventSchema
   .pick(
@@ -25,7 +24,7 @@ const EventPatchSchema = EventSchema
       extraFields: true,
     },
   )
-  .openapi('EventPatchRequest');
+  .openapi('EventPatchRequest')
 
 const eventPatch = createRoute({
   method: 'patch',
@@ -40,31 +39,32 @@ const eventPatch = createRoute({
       },
     },
   },
-  responses: CommonJSONResponse(EventSchema.or(z.array(EventSchema))),
-});
+  responses: JsonResponse(EventSchema.or(z.array(EventSchema))),
+})
 
-app.openapi(eventPatch, async (c) => {
-  const json = c.req.valid('json');
-  const db = drizzle(c.env.DB);
+appServer.openapi(eventPatch, async (c) => {
+  const json = c.req.valid('json')
+  const db = drizzle(c.env.DB)
   if (Array.isArray(json)) {
-    const result = [];
+    const result = []
     for (const e of json) {
       const r = await db
         .update(event)
         .set(e)
         .where(eq(event.id, e.id))
         .returning()
-        .get();
-      result.push(r);
+        .get()
+      result.push(r)
     }
-    return c.json(convertDateToString(result));
-  } else {
+    return c.json(convertDateToString(result))
+  }
+  else {
     const result = await db
       .update(event)
       .set(json)
       .where(eq(event.id, json.id))
       .returning()
-      .get();
-    return c.json(convertDateToString(result));
+      .get()
+    return c.json(convertDateToString(result))
   }
-});
+})

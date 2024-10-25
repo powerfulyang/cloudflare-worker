@@ -1,11 +1,12 @@
-import { app, Bindings, isLocalDev } from '@/server';
-import { bucketSchema } from '@/service/r2/bucket.get';
-import { compressImage } from '@/utils/compressImage';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { drizzle } from 'drizzle-orm/d1';
-import { sha1 } from 'hono/utils/crypto';
-import { bucket, upload } from '~drizzle/schema/upload';
+import type { Bindings } from '@/server'
+import { isLocalDev } from '@/server'
+import { bucketSchema } from '@/service/r2/bucket.get'
+import { compressImage } from '@/utils/compressImage'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute, z } from '@hono/zod-openapi'
+import { bucket, upload } from '~drizzle/schema/upload'
+import { drizzle } from 'drizzle-orm/d1'
+import { sha1 } from 'hono/utils/crypto'
 
 export const uploadSchema = z.object({
   id: z.number().int().positive(),
@@ -16,7 +17,7 @@ export const uploadSchema = z.object({
   mediaType: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
-});
+})
 
 const route = createRoute({
   method: 'post',
@@ -33,66 +34,66 @@ const route = createRoute({
       },
     },
   },
-  responses: CommonJSONResponse(uploadSchema),
-});
+  responses: JsonResponse(uploadSchema),
+})
 
-export const uploadFile = async (env: Bindings, options: {
-  file: File;
-  bucketName?: string;
-}) => {
-  const defaultBucketName = isLocalDev(env) ? 'test' : 'eleven';
-  const { file, bucketName = defaultBucketName } = options;
-  const hash = (await sha1(file.stream()))!;
+export async function uploadFile(env: Bindings, options: {
+  file: File
+  bucketName?: string
+}) {
+  const defaultBucketName = isLocalDev(env) ? 'test' : 'eleven'
+  const { file, bucketName = defaultBucketName } = options
+  const hash = (await sha1(file.stream()))!
 
-  const compressed = await compressImage(file);
-  let thumbnailHash = '';
+  const compressed = await compressImage(file)
+  let thumbnailHash = ''
 
   if (compressed) {
-    thumbnailHash = (await sha1(compressed))!;
+    thumbnailHash = (await sha1(compressed))!
     const thumbnailUploaded = await env.MY_BUCKET.put(
       thumbnailHash,
       compressed,
-    );
+    )
     if (!thumbnailUploaded) {
-      throw new Error('Upload thumbnail failed');
+      throw new Error('Upload thumbnail failed')
     }
   }
 
-  const uploaded = await env.MY_BUCKET.put(hash, file.stream());
+  const uploaded = await env.MY_BUCKET.put(hash, file.stream())
   if (!uploaded) {
-    throw new Error('Upload failed');
+    throw new Error('Upload failed')
   }
 
-  const db = drizzle(env.DB);
-  const mediaType = file.type;
+  const db = drizzle(env.DB)
+  const mediaType = file.type
 
   // TODO: check if file already exists
   const result = await db
     .insert(upload)
     .values({ hash, bucketName, mediaType, thumbnailHash })
     .returning()
-    .get();
+    .get()
 
   const buckets = await db
     .select()
     .from(bucket)
-    .all();
+    .all()
 
   return {
     ...result,
-    bucket: buckets.find((b) => b.name === result.bucketName)!,
-  };
-};
+    bucket: buckets.find(b => b.name === result.bucketName)!,
+  }
+}
 
-app.openapi(route, async (c) => {
-  const form = c.req.valid('form');
-  const file = form.file;
-  const bucketName = form.bucketName;
+appServer.openapi(route, async (c) => {
+  const form = c.req.valid('form')
+  const file = form.file
+  const bucketName = form.bucketName
 
   const result = await uploadFile(c.env, {
     file,
     bucketName,
-  });
+  })
 
-  return c.json(result);
-});
+  return c.json(result)
+})

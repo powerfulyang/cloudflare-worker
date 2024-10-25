@@ -1,9 +1,8 @@
-import { app } from '@/server';
-import { bucketSchema } from '@/service/r2/bucket.get';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { drizzle } from 'drizzle-orm/d1';
-import { bucket } from '~drizzle/schema/upload';
+import { bucketSchema } from '@/service/r2/bucket.get'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute } from '@hono/zod-openapi'
+import { bucket } from '~drizzle/schema/upload'
+import { drizzle } from 'drizzle-orm/d1'
 
 const route = createRoute({
   method: 'post',
@@ -18,16 +17,16 @@ const route = createRoute({
       },
     },
   },
-  responses: CommonJSONResponse(bucketSchema),
-});
+  responses: JsonResponse(bucketSchema),
+})
 
-app.openapi(route, async (c) => {
-  const { name, domain } = c.req.valid('json');
-  const db = drizzle(c.env.DB);
+appServer.openapi(route, async (c) => {
+  const { name, domain } = c.req.valid('json')
+  const db = drizzle(c.env.DB)
   const result = await db
     .insert(bucket)
     .values({ name, domain })
     .returning()
-    .get();
-  return c.json(result);
-});
+    .get()
+  return c.json(result)
+})

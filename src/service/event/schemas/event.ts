@@ -1,4 +1,4 @@
-import { z } from '@hono/zod-openapi';
+import { z } from '@hono/zod-openapi'
 
 export const EventExtraFieldsSchema = z.array(
   z.object(
@@ -34,7 +34,7 @@ export const EventExtraFieldsSchema = z.array(
 )
   .optional()
   .default([])
-  .openapi('EventExtraFields');
+  .openapi('EventExtraFields')
 
 export const EventSchema = z.object(
   {
@@ -58,4 +58,4 @@ export const EventSchema = z.object(
       }),
   },
 )
-  .openapi('Event');
+  .openapi('Event')

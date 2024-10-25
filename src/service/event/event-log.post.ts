@@ -1,10 +1,9 @@
-import { app } from '@/server';
-import { EventLogSchema } from '@/service/event/schemas/event-log';
-import { convertDateToString } from '@/utils/formatDatetime';
-import { CommonJSONResponse } from '@/zodSchemas/CommonJSONResponse';
-import { createRoute, z } from '@hono/zod-openapi';
-import { drizzle } from 'drizzle-orm/d1';
-import { eventLog } from '~drizzle/schema';
+import { EventLogSchema } from '@/service/event/schemas/event-log'
+import { convertDateToString } from '@/utils/formatDatetime'
+import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { createRoute, z } from '@hono/zod-openapi'
+import { eventLog } from '~drizzle/schema'
+import { drizzle } from 'drizzle-orm/d1'
 
 const eventLogPost = createRoute({
   method: 'post',
@@ -25,7 +24,7 @@ const eventLogPost = createRoute({
             )
             .extend(
               {
-                eventTime: z.string().transform((v) => new Date(v)).optional(),
+                eventTime: z.string().transform(v => new Date(v)).optional(),
               },
             )
             .openapi('EventLogPostRequest'),
@@ -33,17 +32,17 @@ const eventLogPost = createRoute({
       },
     },
   },
-  responses: CommonJSONResponse(EventLogSchema),
-});
+  responses: JsonResponse(EventLogSchema),
+})
 
-app.openapi(eventLogPost, async (c) => {
-  const json = c.req.valid('json');
-  const db = drizzle(c.env.DB);
+appServer.openapi(eventLogPost, async (c) => {
+  const json = c.req.valid('json')
+  const db = drizzle(c.env.DB)
   const result = await db
     .insert(eventLog)
     .values(json)
     .returning()
-    .get();
+    .get()
 
-  return c.json(convertDateToString(result));
-});
+  return c.json(convertDateToString(result))
+})

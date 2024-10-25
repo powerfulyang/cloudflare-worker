@@ -1,17 +1,8 @@
-import { app } from '@/server';
-import './service/event';
-import './service/ai';
-import './service/r2';
-import './service/moment';
-import './service/baby';
-import './service/hello';
+import app from '@/server'
+import AiRoute from '@/service/ai'
+import BabyRoute from '@/service/baby'
 
-app.doc('/api/doc', {
-  openapi: '3.1.0',
-  info: {
-    version: '1.0.0',
-    title: 'My API',
-  },
-});
+app.route('ai', AiRoute)
+app.route('', BabyRoute)
 
-export default app;
+export default app
