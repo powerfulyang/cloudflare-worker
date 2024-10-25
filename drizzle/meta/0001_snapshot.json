@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "4e0a8f48-41c4-429a-9942-28d2fbf3822c",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "d1587e82-941d-407a-af7f-0bc010684999",
+  "prevId": "4e0a8f48-41c4-429a-9942-28d2fbf3822c",
   "tables": {
     "baby": {
       "name": "baby",
@@ -283,8 +283,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "order": {
-          "name": "order",
+        "sort": {
+          "name": "sort",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -466,7 +466,9 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {}
+    "columns": {
+      "\"moments_to_uploads\".\"order\"": "\"moments_to_uploads\".\"sort\""
+    }
   },
   "internal": {
     "indexes": {}

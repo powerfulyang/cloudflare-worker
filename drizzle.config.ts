@@ -4,5 +4,4 @@ export default {
   dialect: 'sqlite',
   schema: './drizzle/schema',
   out: './drizzle',
-  driver: 'expo',
 } satisfies Config

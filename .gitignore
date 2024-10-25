@@ -3,3 +3,4 @@ node_modules
 .wrangler
 openapi.json
 .dev.vars
+remote.sql

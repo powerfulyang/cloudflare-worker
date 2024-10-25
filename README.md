@@ -37,13 +37,23 @@ binding = "AI"
 
 ### 开启本地开发
 
-- 执行 SQL 语句, 执行 `npm run d1:execute`
+- 执行 SQL 语句
 
 ```bash
 wrangler d1 execute <database-name> --file <sql-file>
 ```
 
-## 开发
+### 同步表结构
+
+同步 `drizzle` 的 sql 文件，即使用 d1 execute 命令执行
+
+### 开发使用本地的 sqlite
+
+```bash
+npm run start:local
+```
+
+### 开发使用远程 cloudflare d1
 
 ```bash
 npm run start:remote

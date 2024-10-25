@@ -11,9 +11,8 @@
     "generate:sql": "drizzle-kit generate",
     "login": "wrangler login",
     "d1:create": "wrangler d1 create eleven",
-    "d1:execute:local": "wrangler d1 execute eleven --file ./drizzle/0000_faithful_sleeper.sql",
-    "d1:execute:remote": "wrangler d1 execute eleven --remote --file ./drizzle/0000_faithful_sleeper.sql",
-    "d1:export:remote": "wrangler d1 export eleven --remote --output=./schema.sql",
+    "d1:migrate:remote": "wrangler d1 execute eleven --remote --file ./drizzle/0001_tricky_runaways.sql",
+    "d1:export:remote": "wrangler d1 export eleven --remote --output=./remote.sql",
     "tsc-check": "tsc --noEmit",
     "lint": "eslint . --fix"
   },

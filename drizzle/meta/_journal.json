@@ -1,12 +1,19 @@
 {
-  "version": "5",
+  "version": "7",
   "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1705655041267,
-      "tag": "0000_faithful_sleeper",
+      "version": "6",
+      "when": 1729851399620,
+      "tag": "0000_real_glorian",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1729851523062,
+      "tag": "0001_tricky_runaways",
       "breakpoints": true
     }
   ]

@@ -19,6 +19,7 @@ CREATE TABLE `event` (
 	`updated_at` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `event_name_unique` ON `event` (`name`);--> statement-breakpoint
 CREATE TABLE `event_log` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`event_name` text NOT NULL,
@@ -55,6 +56,7 @@ CREATE TABLE `bucket` (
 	`updated_at` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `bucket_name_unique` ON `bucket` (`name`);--> statement-breakpoint
 CREATE TABLE `upload` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`hash` text NOT NULL,
@@ -65,6 +67,3 @@ CREATE TABLE `upload` (
 	`updated_at` integer NOT NULL,
 	FOREIGN KEY (`bucket_name`) REFERENCES `bucket`(`name`) ON UPDATE no action ON DELETE no action
 );
---> statement-breakpoint
-CREATE UNIQUE INDEX `event_name_unique` ON `event` (`name`);--> statement-breakpoint
-CREATE UNIQUE INDEX `bucket_name_unique` ON `bucket` (`name`);
