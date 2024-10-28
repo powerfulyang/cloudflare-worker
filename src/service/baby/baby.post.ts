@@ -1,45 +1,27 @@
-import { uploadSchema } from '@/service/r2/upload.post'
+import { getAppInstance } from '@/utils'
+import { BabyPost } from '@/zodSchemas/Baby'
+import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
-import { baby } from '~drizzle/schema/baby'
-import { drizzle } from 'drizzle-orm/d1'
 
-export const babySchema = z.object({
-  name: z.string(),
-  avatar: uploadSchema,
-  gender: z.number().int(),
-  bornAt: z.string(),
-})
+const PostBaby = getAppInstance()
 
 const route = createRoute({
-  path: '/api/baby',
+  path: '',
   method: 'post',
   request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: babySchema.merge(
-            z.object({
-              avatar: z.number().int(),
-              gender: z.number().int().default(0),
-            }),
-          ),
-        },
-      },
-    },
+    body: JsonRequest(BabyPost),
   },
   responses: JsonResponse(z.any()),
 })
 
-appServer.openapi(route, async (c) => {
+PostBaby.openapi(route, async (c) => {
   const json = c.req.valid('json')
-  const db = drizzle(c.env.DB)
 
-  const result = await db
-    .insert(baby)
-    .values(json)
-    .returning()
-    .get()
+  const babyService = c.get('babyService')
+  const result = await babyService.create(json)
 
   return c.json(result)
 })
+
+export default PostBaby

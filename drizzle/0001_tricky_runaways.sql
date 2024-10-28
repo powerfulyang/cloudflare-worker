@@ -1,1 +1,0 @@
-ALTER TABLE `moments_to_uploads` RENAME COLUMN "order" TO "sort";

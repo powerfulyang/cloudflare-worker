@@ -2,7 +2,7 @@ import { EventLogSchema } from '@/service/event/schemas/event-log'
 import { convertDateToString } from '@/utils/formatDatetime'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
-import { eventLog } from '~drizzle/schema'
+import { eventLog } from '~drizzle/schema/event'
 import { drizzle } from 'drizzle-orm/d1'
 
 const eventLogPost = createRoute({

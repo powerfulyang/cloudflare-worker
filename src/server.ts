@@ -1,31 +1,17 @@
 import { version } from '#/package.json'
-import { OpenAPIHono } from '@hono/zod-openapi'
+import { BabyService } from '@/service/baby/baby.service'
+import { getAppInstance } from '@/utils'
+import { z } from '@hono/zod-openapi'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { fromZodError } from 'zod-validation-error'
 
-const app = new OpenAPIHono<{
-  Bindings: Bindings
-  Variables: {
-    bucketName: 'eleven' | 'test'
-  }
-}>({
-  defaultHook: (result, c) => {
-    if (!result.success) {
-      // ZodError handler
-      if (result.error.name === 'ZodError') {
-        return c.json(
-          {
-            error: fromZodError(result.error).toString(),
-            source: 'zod_error_handler',
-          },
-          422,
-        )
-      }
-    }
-  },
-}).basePath('api')
+const app = getAppInstance().basePath('api')
 
+// first
+app.use('*', logger())
+
+// second
 app.use(
   '*',
   cors({
@@ -42,10 +28,25 @@ app.use(
   }),
 )
 
-app.use('*', logger())
+// third
+// service middleware
+app.use('*', async (ctx, next) => {
+  const d1 = ctx.env.DB
+  ctx.set('babyService', new BabyService(d1))
+  await next()
+})
 
 // Error handler
 app.onError((error, ctx) => {
+  if (error instanceof z.ZodError) {
+    return ctx.json(
+      {
+        error: fromZodError(error).toString(),
+        source: 'zod_error_handler',
+      },
+      422,
+    )
+  }
   return ctx.json(
     {
       error: error.message,

@@ -3,6 +3,6 @@ import AiRoute from '@/service/ai'
 import BabyRoute from '@/service/baby'
 
 app.route('ai', AiRoute)
-app.route('', BabyRoute)
+app.route('baby', BabyRoute)
 
 export default app

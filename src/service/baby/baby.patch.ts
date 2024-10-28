@@ -1,43 +1,30 @@
-import { babySchema } from '@/service/baby/baby.post'
+import { getAppInstance } from '@/utils'
+import { Baby, BabyKey, BabyPatch } from '@/zodSchemas/Baby'
+import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
-import { createRoute, z } from '@hono/zod-openapi'
-import { baby } from '~drizzle/schema/baby'
-import { eq } from 'drizzle-orm'
-import { drizzle } from 'drizzle-orm/d1'
+import { createRoute } from '@hono/zod-openapi'
+
+const PatchBaby = getAppInstance()
 
 const route = createRoute({
-  path: '/api/baby',
+  path: ':id',
   method: 'patch',
+  description: 'Update baby info by id',
   request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: babySchema
-            .merge(
-              z.object({
-                avatar: z.number().int().optional(),
-                gender: z.number().int().optional(),
-              }),
-            )
-            .partial()
-            .merge(z.object({ id: z.number().int().positive() })),
-        },
-      },
-    },
+    params: BabyKey,
+    body: JsonRequest(BabyPatch),
   },
-  responses: JsonResponse(z.any()),
+  responses: JsonResponse(Baby),
 })
 
-appServer.openapi(route, async (c) => {
+PatchBaby.openapi(route, async (c) => {
+  const { id } = c.req.valid('param')
   const json = c.req.valid('json')
-  const db = drizzle(c.env.DB)
 
-  const result = await db
-    .update(baby)
-    .set(json)
-    .where(eq(baby.id, json.id))
-    .returning()
-    .get()
+  const babyService = c.get('babyService')
+  const result = await babyService.updateById(id, json)
 
   return c.json(result)
 })
+
+export default PatchBaby

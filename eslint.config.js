@@ -9,7 +9,7 @@ export default antfu(
   {
     rules: {
       // overrides
-
+      'no-console': 'off',
     },
   },
 )

@@ -1,6 +1,6 @@
 import { InternalServerError } from '@/zodSchemas/InternalServerError'
 import { createRoute, z } from '@hono/zod-openapi'
-import { eventLog } from '~drizzle/schema'
+import { eventLog } from '~drizzle/schema/event'
 import { eq } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/d1'
 

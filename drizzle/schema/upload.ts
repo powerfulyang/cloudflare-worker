@@ -30,7 +30,10 @@ export const upload = sqliteTable('upload', {
 
 export const uploadRelations = relations(upload, ({ one, many }) => {
   return {
-    bucket: one(bucket),
+    bucket: one(bucket, {
+      fields: [upload.bucketName],
+      references: [bucket.name],
+    }),
     moments: many(moment),
   }
 })

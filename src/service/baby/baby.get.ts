@@ -1,45 +1,26 @@
+import { getAppInstance } from '@/utils'
+import { Baby, BabyKey } from '@/zodSchemas/Baby'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
-import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import { baby } from '~drizzle/schema/baby'
-import { bucket, upload } from '~drizzle/schema/upload'
-import { eq } from 'drizzle-orm'
-import { drizzle } from 'drizzle-orm/d1'
+import { createRoute } from '@hono/zod-openapi'
 
-const route = new OpenAPIHono<{
-  Bindings: Bindings
-}>()
+const GetBabyById = getAppInstance()
 
-const getBabyById = createRoute({
+const route = createRoute({
   path: ':id',
   method: 'get',
+  description: 'Get baby info by id',
   request: {
-    params: z.object({
-      id: z.string().or(z.number()).openapi(
-        {
-          description: 'The id of the baby to get',
-          param: {
-            in: 'path',
-          },
-        },
-      ),
-    }),
+    params: BabyKey,
   },
-  responses: JsonResponse(z.any()),
+  responses: JsonResponse(Baby),
 })
 
-route.openapi(getBabyById, async (c) => {
+GetBabyById.openapi(route, async (c) => {
   const { id } = c.req.valid('param')
-  const db = drizzle(c.env.DB)
-
-  const result = await db
-    .select()
-    .from(baby)
-    .leftJoin(upload, eq(baby.avatar, upload.id))
-    .leftJoin(bucket, eq(upload.bucketName, bucket.name))
-    .where(eq(baby.id, Number(id)))
-    .get()
+  const babyService = c.get('babyService')
+  const result = await babyService.getById(id)
 
   return c.json(result)
 })
 
-export default route
+export default GetBabyById

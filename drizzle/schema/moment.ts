@@ -18,6 +18,7 @@ export const momentsToUploads = sqliteTable('moments_to_uploads', {
   momentId: integer('moment_id').notNull().references(() => moment.id),
   uploadId: integer('upload_id').notNull().references(() => upload.id),
   sort: integer('sort').notNull().default(0),
+  order: integer('order').notNull().default(0),
 }, (t) => {
   return {
     pk: primaryKey({

@@ -3,7 +3,7 @@ import { EventLogResultSchema } from '@/service/event/schemas/event-log'
 import { convertDateToString } from '@/utils/formatDatetime'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
-import { event, eventLog } from '~drizzle/schema'
+import { event, eventLog } from '~drizzle/schema/event'
 import { and, desc, eq, sql } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/d1'
 
