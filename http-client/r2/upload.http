@@ -1,5 +1,5 @@
 ### upload image
-POST {{origin}}/api/upload
+POST {{origin}}/api/r2/upload
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
@@ -10,7 +10,7 @@ Content-Type: image/jpeg
 --WebAppBoundary
 
 ### upload video
-POST {{origin}}/api/upload
+POST {{origin}}/api/r2/upload
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
@@ -19,3 +19,6 @@ Content-Type: video/mp4
 
 < ./video.mp4
 --WebAppBoundary
+
+### get upload
+GET {{origin}}/api/r2/upload/c95e79ba322c3c4a48edbfacad41c0c7071795c6adf5fb94778ff4ae46d2dea2

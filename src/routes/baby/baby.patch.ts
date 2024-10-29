@@ -1,10 +1,10 @@
-import { getAppInstance } from '@/utils'
+import { getAppInstance } from '@/core'
 import { Baby, BabyKey, BabyPatch } from '@/zodSchemas/Baby'
 import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute } from '@hono/zod-openapi'
 
-const PatchBaby = getAppInstance()
+const PatchBabyId = getAppInstance()
 
 const route = createRoute({
   path: ':id',
@@ -17,7 +17,7 @@ const route = createRoute({
   responses: JsonResponse(Baby),
 })
 
-PatchBaby.openapi(route, async (c) => {
+PatchBabyId.openapi(route, async (c) => {
   const { id } = c.req.valid('param')
   const json = c.req.valid('json')
 
@@ -27,4 +27,4 @@ PatchBaby.openapi(route, async (c) => {
   return c.json(result)
 })
 
-export default PatchBaby
+export default PatchBabyId

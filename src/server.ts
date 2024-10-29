@@ -1,6 +1,6 @@
 import { version } from '#/package.json'
-import { BabyService } from '@/service/baby/baby.service'
-import { getAppInstance } from '@/utils'
+import { getAppInstance } from '@/core'
+import { BabyService } from '@/service/baby.service'
 import { z } from '@hono/zod-openapi'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'

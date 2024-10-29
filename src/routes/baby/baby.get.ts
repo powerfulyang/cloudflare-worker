@@ -1,4 +1,4 @@
-import { getAppInstance } from '@/utils'
+import { getAppInstance } from '@/core'
 import { Baby, BabyKey } from '@/zodSchemas/Baby'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute } from '@hono/zod-openapi'

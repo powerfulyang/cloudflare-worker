@@ -1,5 +1,5 @@
 ### Create a test bucket
-POST {{origin}}/api/bucket
+POST {{origin}}/api/r2/bucket
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### Create a product bucket
-POST {{origin}}/api/bucket
+POST {{origin}}/api/r2/bucket
 Content-Type: application/json
 
 {
@@ -17,4 +17,4 @@ Content-Type: application/json
 }
 
 ### Query a bucket
-GET {{origin}}/api/bucket/test
+GET {{origin}}/api/r2/bucket/eleven

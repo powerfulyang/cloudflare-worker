@@ -1,6 +1,6 @@
 import type { BabyPatch, BabyPost } from '@/zodSchemas/Baby'
 import type { z } from '@hono/zod-openapi'
-import { BaseService } from '@/base/base.service'
+import { BaseService } from '@/core/base.service'
 import { baby } from '~drizzle/schema'
 import { eq } from 'drizzle-orm'
 

@@ -1,4 +1,4 @@
-import { getAppInstance } from '@/utils'
+import { getAppInstance } from '@/core'
 import { BabyPost } from '@/zodSchemas/Baby'
 import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
