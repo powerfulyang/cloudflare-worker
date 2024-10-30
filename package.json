@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start:local": "wrangler dev",
+    "start:local": "wrangler dev --port 12345",
     "start:remote": "wrangler dev --remote",
     "deploy": "wrangler deploy",
     "openapi": "run-s openapi:*",

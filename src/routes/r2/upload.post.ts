@@ -37,7 +37,8 @@ export async function uploadFile(env: Bindings, options: {
 }) {
   const defaultBucketName = isLocalDev(env) ? 'test' : 'eleven'
   const { file, bucketName = defaultBucketName } = options
-  const hash = (await sha256(file.stream()))!
+
+  const hash = (await sha256(await file.arrayBuffer()))!
   const db = getDrizzleInstance(env.DB)
 
   // check if the upload already exists
@@ -51,7 +52,12 @@ export async function uploadFile(env: Bindings, options: {
     return existing
   }
 
-  const uploaded = await env.MY_BUCKET.put(hash, file.stream())
+  const uploaded = await env.MY_BUCKET.put(hash, file.stream(), {
+    httpMetadata: {
+      contentType: file.type,
+    },
+    sha256: hash,
+  })
   if (!uploaded) {
     throw new Error('Upload failed')
   }
