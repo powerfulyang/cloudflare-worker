@@ -16,7 +16,9 @@
     "d1:migrate:remote": "wrangler d1 execute eleven --remote --file ./drizzle/000x.sql",
     "d1:export:remote": "wrangler d1 export eleven --remote --output=./remote.sql",
     "tsc-check": "tsc --noEmit",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+		"unit:test": "vitest --run --exclude tests/**/*.e2e.spec.ts",
+		"e2e:test": "vitest --e2e --run tests/**/*.e2e.spec.ts"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.16.4",
