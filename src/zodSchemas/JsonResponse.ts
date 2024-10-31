@@ -32,6 +32,6 @@ export function JsonResponse<T>(schema: T) {
         },
       },
     },
-    500: InternalServerError,
+    // 500: InternalServerError,
   }
 }

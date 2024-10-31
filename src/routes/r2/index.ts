@@ -19,9 +19,14 @@ R2Route.get('upload/:hash', async (c) => {
   }
   const contentType = response.httpMetadata?.contentType
   if (contentType) {
-    return c.newResponse(response.body, 200, {
-      'Content-Type': contentType,
-    })
+    return c.newResponse(
+      response.body,
+      {
+        headers: {
+          'Content-Type': contentType,
+        },
+      },
+    )
   }
   else {
     throw new HTTPException(500)

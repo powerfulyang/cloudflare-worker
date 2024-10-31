@@ -5,11 +5,13 @@ export const bucket = sqliteTable('bucket', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull().unique(),
   domain: text('domain').notNull(),
+  deleted: integer('deleted').default(0).notNull(),
   createdAt: integer('created_at', { mode: 'timestamp_ms' })
     .notNull()
     .$defaultFn(() => new Date()),
   updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
     .notNull()
+    .$onUpdateFn(() => new Date())
     .$defaultFn(() => new Date()),
 })
 
@@ -19,11 +21,13 @@ export const upload = sqliteTable('upload', {
   thumbnailHash: text('thumbnail_hash').notNull().default(''),
   bucketName: text('bucket_name').notNull().references(() => bucket.name),
   mediaType: text('media_type').notNull(),
+  deleted: integer('deleted').default(0).notNull(),
   createdAt: integer('created_at', { mode: 'timestamp_ms' })
     .notNull()
     .$defaultFn(() => new Date()),
   updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
     .notNull()
+    .$onUpdateFn(() => new Date())
     .$defaultFn(() => new Date()),
 })
 

@@ -1,44 +1,28 @@
-import { momentSchema } from '@/service/moment/moment.post'
-import { uploadSchema } from '@/service/r2/upload.post'
+import { getAppInstance, getDrizzleInstance } from '@/core'
+import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { MomentKey, MomentPut } from '@/zodSchemas/Moment'
 import { createRoute, z } from '@hono/zod-openapi'
 import { moment, momentsToUploads } from '~drizzle/schema/moment'
-import { upload } from '~drizzle/schema/upload'
-import { asc, eq, inArray } from 'drizzle-orm'
-import { drizzle } from 'drizzle-orm/d1'
+import { eq } from 'drizzle-orm'
 
-const momentPutSchema = momentSchema
-  .pick({ content: true, id: true })
-  .merge(
-    z.object({
-      attachments: z
-        .array(uploadSchema.pick({ id: true }))
-        .optional()
-        .default([]),
-    }),
-  )
-  .openapi('MomentPutRequest')
+const PutMoment = getAppInstance()
 
 const route = createRoute({
   method: 'put',
-  path: '/api/moment',
+  path: ':id',
   request: {
-    body: {
-      required: true,
-      content: {
-        'application/json': {
-          schema: momentPutSchema,
-        },
-      },
-    },
+    params: MomentKey,
+    body: JsonRequest(MomentPut),
   },
-  responses: JsonResponse(momentSchema),
+  responses: JsonResponse(z.boolean()),
 })
 
-appServer.openapi(route, async (c) => {
-  const { content, attachments, id } = c.req.valid('json')
+PutMoment.openapi(route, async (c) => {
+  const { id } = c.req.valid('param')
+  const { content, attachments } = c.req.valid('json')
+  const db = getDrizzleInstance(c.env.DB)
 
-  const db = drizzle(c.env.DB)
   const momentResult = await db
     .update(moment)
     .set({ content })
@@ -46,37 +30,24 @@ appServer.openapi(route, async (c) => {
     .returning()
     .get()
 
-  // TODO: transaction with rollback
-
-  const toInsert = attachments.map((attachment, index) => ({
-    momentId: momentResult.id,
-    uploadId: attachment.id,
-    order: index,
-  }))
-
-  const result: any = momentResult
-
   // delete all momentsToUploads where momentId = id
   await db
-    .delete(momentsToUploads)
+    .update(momentsToUploads)
+    .set({ deleted: 1 })
     .where(eq(momentsToUploads.momentId, id))
 
-  if (toInsert.length) {
-    await db
-      .insert(momentsToUploads)
-      .values(toInsert)
-      .execute()
-
-    const res = await db
-      .select()
-      .from(upload)
-      .leftJoin(momentsToUploads, eq(upload.id, momentsToUploads.uploadId))
-      .orderBy(asc(momentsToUploads.order))
-      .where(inArray(upload.id, attachments.map(a => a.id)))
-      .all()
-
-    result.attachments = res.map(r => r.upload)
+  if (attachments?.length) {
+    const toInsert = attachments
+      .map((attachment, index) => ({
+        momentId: momentResult.id,
+        uploadId: attachment.id,
+        order: index,
+      }))
+    // 尝试插入 attachments 数据
+    await db.insert(momentsToUploads).values(toInsert).execute()
   }
 
-  return c.json(result)
+  return c.json(true)
 })
+
+export default PutMoment

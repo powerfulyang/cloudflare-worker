@@ -1,6 +1,6 @@
 name = "service"
 main = "src/index.ts"
-compatibility_date = "2024-10-25"
+compatibility_date = "2024-10-31"
 
 [triggers]
 crons = []

@@ -1,84 +1,56 @@
-import { uploadSchema } from '@/service/r2/upload.post'
+import { getAppInstance, getDrizzleInstance } from '@/core'
+import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
+import { MomentPost } from '@/zodSchemas/Moment'
 import { createRoute, z } from '@hono/zod-openapi'
 import { moment, momentsToUploads } from '~drizzle/schema/moment'
-import { upload } from '~drizzle/schema/upload'
-import { asc, eq, inArray } from 'drizzle-orm'
-import { drizzle } from 'drizzle-orm/d1'
+import { eq } from 'drizzle-orm'
 
-export const momentSchema = z.object({
-  id: z.number().int().positive(),
-  type: z.enum(['moment', 'feedback']).optional().default('moment'),
-  content: z.string(),
-  attachments: z.array(uploadSchema),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-})
-
-const momentPostSchema = momentSchema
-  .pick({ content: true, type: true })
-  .merge(
-    z.object({
-      attachments: z
-        .array(uploadSchema.pick({ id: true }))
-        .optional()
-        .default([]),
-    }),
-  )
-  .openapi('MomentPostRequest')
+const PostMoment = getAppInstance()
 
 const route = createRoute({
   method: 'post',
-  path: '/api/moment',
+  path: '',
   request: {
-    body: {
-      required: true,
-      content: {
-        'application/json': {
-          schema: momentPostSchema,
-        },
-      },
-    },
+    body: JsonRequest(MomentPost),
   },
-  responses: JsonResponse(momentSchema),
+  responses: JsonResponse(z.boolean()),
 })
 
-appServer.openapi(route, async (c) => {
+PostMoment.openapi(route, async (c) => {
   const { content, attachments, type } = c.req.valid('json')
+  const db = getDrizzleInstance(c.env.DB)
+  let momentResult: { id: number } | null = null
 
-  const db = drizzle(c.env.DB)
-  const momentResult = await db
-    .insert(moment)
-    .values({ content, type })
-    .returning()
-    .get()
+  try {
+    // 首先插入 moment，并获取插入的 momentResult
+    momentResult = await db
+      .insert(moment)
+      .values({ content, type })
+      .returning()
+      .get()
 
-  // TODO: transaction with rollback
+    // 准备插入 momentsToUploads 的数据
+    const toInsert = attachments
+      .map((attachment, index) => (
+        {
+          momentId: momentResult!.id,
+          uploadId: attachment.id,
+          sort: index,
+        }
+      ))
 
-  const toInsert = attachments.map((attachment, index) => ({
-    momentId: momentResult.id,
-    uploadId: attachment.id,
-    order: index,
-  }))
-
-  const result: any = momentResult
-
-  if (toInsert.length) {
-    await db
-      .insert(momentsToUploads)
-      .values(toInsert)
-      .execute()
-
-    const res = await db
-      .select()
-      .from(upload)
-      .leftJoin(momentsToUploads, eq(upload.id, momentsToUploads.uploadId))
-      .orderBy(asc(momentsToUploads.order))
-      .where(inArray(upload.id, attachments.map(a => a.id)))
-      .all()
-
-    result.attachments = res.map(r => r.upload)
+    // 尝试插入 attachments 数据
+    await db.insert(momentsToUploads).values(toInsert).execute()
+  }
+  catch {
+    // 如果 momentsToUploads 插入失败，删除之前插入的 moment
+    if (momentResult) {
+      await db.delete(moment).where(eq(moment.id, momentResult.id)).execute()
+    }
   }
 
-  return c.json(result)
+  return c.json(true)
 })
+
+export default PostMoment

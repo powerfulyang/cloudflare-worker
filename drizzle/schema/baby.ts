@@ -9,19 +9,20 @@ export const baby = sqliteTable('baby', {
   // 0 is girl, 1 is boy
   gender: integer('gender').default(0).notNull(),
   avatar: integer('avatar').default(1).notNull().references(() => upload.id),
-  avatarUploadId: integer('avatar_upload_id').notNull().references(() => upload.id),
+  deleted: integer('deleted').default(0).notNull(),
   createdAt: integer('created_at', { mode: 'timestamp_ms' })
     .notNull()
     .$defaultFn(() => new Date()),
   updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
     .notNull()
+    .$onUpdateFn(() => new Date())
     .$defaultFn(() => new Date()),
 })
 
 export const babyAvatar = relations(baby, ({ one }) => {
   return {
     avatar: one(upload, {
-      fields: [baby.avatarUploadId],
+      fields: [baby.avatar],
       references: [upload.id],
     }),
   }

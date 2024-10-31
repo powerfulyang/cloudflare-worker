@@ -26,7 +26,7 @@ PostBucket.openapi(route, async (c) => {
     .returning()
     .get()
 
-  return c.json(result, 200)
+  return c.json(result)
 })
 
 export default PostBucket
