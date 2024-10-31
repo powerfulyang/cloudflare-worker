@@ -1,46 +1,39 @@
-import { EventSchema } from '@/service/event/schemas/event'
-import { convertDateToString } from '@/utils/formatDatetime'
+import { getAppInstance, getDrizzleInstance } from '@/core'
+import { Event, EventPost } from '@/zodSchemas/Event'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
 import { event } from '~drizzle/schema/event'
-import { drizzle } from 'drizzle-orm/d1'
 
-const EventPostSchema = EventSchema
-  .pick(
-    {
-      name: true,
-      displayName: true,
-      icon: true,
-      extraFields: true,
-    },
-  )
-  .openapi('EventPostRequest')
+const PostEvent = getAppInstance()
 
-const eventPost = createRoute({
+const route = createRoute({
   method: 'post',
-  path: '/api/event',
+  path: '',
   request: {
     body: {
-      required: true,
       content: {
         'application/json': {
-          schema: z.array(EventPostSchema).or(EventPostSchema),
+          schema: z.array(EventPost).or(EventPost),
         },
       },
     },
   },
-  responses: JsonResponse(z.array(EventSchema)),
+  responses: JsonResponse(z.array(Event)),
 })
 
-appServer.openapi(eventPost, async (c) => {
+PostEvent.openapi(route, async (c) => {
   const json = c.req.valid('json')
-  const db = drizzle(c.env.DB)
-  if (Array.isArray(json)) {
-    const result = await db.insert(event).values(json).returning()
+  const db = getDrizzleInstance(c.env.DB)
 
-    return c.json(convertDateToString(result))
+  if (Array.isArray(json)) {
+    const result = await db
+      .insert(event)
+      .values(json)
+      .returning()
+    return c.json(result)
   }
   const result = await db.insert(event).values(json).returning()
-
-  return c.json(convertDateToString(result))
+  return c.json(result)
 })
+
+export default PostEvent

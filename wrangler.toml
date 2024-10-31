@@ -1,6 +1,7 @@
 name = "service"
 main = "src/index.ts"
 compatibility_date = "2024-10-31"
+compatibility_flags = [ "nodejs_als" ]
 
 [triggers]
 crons = []

@@ -33,7 +33,7 @@ PutMoment.openapi(route, async (c) => {
   // delete all momentsToUploads where momentId = id
   await db
     .update(momentsToUploads)
-    .set({ deleted: 1 })
+    .set({ deleted: true })
     .where(eq(momentsToUploads.momentId, id))
 
   if (attachments?.length) {

@@ -1,19 +1,25 @@
-import { EventSchema } from '@/service/event/schemas/event'
-import { convertDateToString } from '@/utils/formatDatetime'
+import { getAppInstance, getDrizzleInstance } from '@/core'
+import { Event } from '@/zodSchemas/Event'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
-import { event } from '~drizzle/schema/event'
-import { drizzle } from 'drizzle-orm/d1'
 
-const eventGet = createRoute({
+const GetEvent = getAppInstance()
+
+const route = createRoute({
   method: 'get',
-  path: '/api/event',
-  responses: JsonResponse(z.array(EventSchema)),
+  path: '',
+  responses: JsonResponse(z.array(Event)),
 })
 
-appServer.openapi(eventGet, async (c) => {
-  const db = drizzle(c.env.DB)
-  const result = await db.select().from(event).all()
+GetEvent.openapi(route, async (c) => {
+  const db = getDrizzleInstance(c.env.DB)
 
-  return c.json(convertDateToString(result))
+  const result = await db
+    .query
+    .event
+    .findMany()
+
+  return c.json(result)
 })
+
+export default GetEvent

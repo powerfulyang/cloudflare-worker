@@ -26,14 +26,14 @@ DeleteMoment.openapi(route, async (c) => {
   // 先删关联
   await db
     .update(momentsToUploads)
-    .set({ deleted: 1 })
+    .set({ deleted: true })
     .where(eq(momentsToUploads.momentId, id))
     .execute()
 
   // 再删主键
   await db
     .update(moment)
-    .set({ deleted: 1 })
+    .set({ deleted: true })
     .where(eq(moment.id, id))
     .execute()
 

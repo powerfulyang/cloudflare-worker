@@ -9,7 +9,7 @@ export const baby = sqliteTable('baby', {
   // 0 is girl, 1 is boy
   gender: integer('gender').default(0).notNull(),
   avatar: integer('avatar').default(1).notNull().references(() => upload.id),
-  deleted: integer('deleted').default(0).notNull(),
+  deleted: integer('deleted', { mode: 'boolean' }).notNull().default(false),
   createdAt: integer('created_at', { mode: 'timestamp_ms' })
     .notNull()
     .$defaultFn(() => new Date()),

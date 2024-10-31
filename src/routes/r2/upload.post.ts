@@ -41,25 +41,15 @@ export async function uploadFile(env: Bindings, options: {
   const hash = (await sha256(await file.arrayBuffer()))!
   const db = getDrizzleInstance(env.DB)
 
-  // check if the upload already exists
-  const existing = await db.query.upload.findFirst({
-    where: eq(upload.hash, hash),
-    with: {
-      bucket: true,
-    },
-  })
-  if (existing) {
-    return existing
-  }
-
-  const uploaded = await env.MY_BUCKET.put(hash, file.stream(), {
-    httpMetadata: {
-      contentType: file.type,
-    },
-    sha256: hash,
-  })
-  if (!uploaded) {
-    throw new Error('Upload failed')
+  // 判断文件是否已经上传, 使用 head 方法
+  const head = await env.MY_BUCKET.head(hash)
+  if (!head) {
+    await env.MY_BUCKET.put(hash, file.stream(), {
+      httpMetadata: {
+        contentType: file.type,
+      },
+      sha256: hash,
+    })
   }
 
   const mediaType = file.type

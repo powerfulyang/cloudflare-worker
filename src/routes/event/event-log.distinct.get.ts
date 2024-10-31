@@ -1,48 +1,42 @@
 import type { SQL } from 'drizzle-orm'
-import { EventSchema } from '@/service/event/schemas/event'
-import { EventLogSchema } from '@/service/event/schemas/event-log'
+import { getAppInstance, getDrizzleInstance } from '@/core'
+import { Event } from '@/zodSchemas/Event'
+import { EventLog } from '@/zodSchemas/EventLog'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
 import { event, eventLog } from '~drizzle/schema/event'
 import { and, eq, sql } from 'drizzle-orm'
-import { drizzle } from 'drizzle-orm/d1'
+
+const GetEventLogDistinct = getAppInstance()
 
 const route = createRoute({
   method: 'get',
-  path: '/api/event-log/distinct',
+  path: '',
   request: {
-    query: z.object(
-      {
-        date: z
-          .string()
-          .optional()
-          .openapi(
-            {
-              format: 'date',
-              param: {
-                in: 'query',
-                name: 'date',
-              },
-              example: '2021-01-01',
-            },
-          ),
-      },
-    ),
+    query: z.object({
+      date: z
+        .string()
+        .optional()
+        .openapi({
+          format: 'date',
+          param: {
+            in: 'query',
+            name: 'date',
+          },
+          example: '2021-01-01',
+        }),
+    }),
   },
   responses: JsonResponse(
     z.array(
-      EventSchema
-        .pick(
-          {
-            displayName: true,
-          },
-        )
+      Event
+        .pick({
+          displayName: true,
+        })
         .merge(
-          EventLogSchema.pick(
-            {
-              eventName: true,
-            },
-          ),
+          EventLog.pick({
+            eventName: true,
+          }),
         )
         .extend({
           count: z.number(),
@@ -52,9 +46,10 @@ const route = createRoute({
   ),
 })
 
-appServer.openapi(route, async (c) => {
+GetEventLogDistinct.openapi(route, async (c) => {
   const { date } = c.req.valid('query')
-  const db = drizzle(c.env.DB)
+  const db = getDrizzleInstance(c.env.DB)
+
   const where: SQL[] = []
   if (date) {
     where.push(
@@ -75,3 +70,5 @@ appServer.openapi(route, async (c) => {
 
   return c.json(result)
 })
+
+export default GetEventLogDistinct

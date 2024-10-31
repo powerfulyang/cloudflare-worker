@@ -1,55 +1,36 @@
-import { EventLogSchema } from '@/service/event/schemas/event-log'
-import { convertDateToString } from '@/utils/formatDatetime'
+import { getAppInstance, getDrizzleInstance } from '@/core'
+import { EventLogKey, EventLogPatch } from '@/zodSchemas/EventLog'
+import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
 import { eventLog } from '~drizzle/schema/event'
 import { eq } from 'drizzle-orm'
-import { drizzle } from 'drizzle-orm/d1'
 
-const eventLogPatch = createRoute({
+const PatchEventLog = getAppInstance()
+
+const route = createRoute({
   method: 'patch',
-  path: '/api/event-log',
+  path: '/:id',
   request: {
-    body: {
-      required: true,
-      content: {
-        'application/json': {
-          schema: EventLogSchema
-            .pick(
-              {
-                id: true,
-                comment: true,
-                extra: true,
-                eventTime: true,
-              },
-            )
-            .partial({
-              comment: true,
-              extra: true,
-              eventTime: true,
-            })
-            .extend(
-              {
-                eventTime: z.string().transform(v => new Date(v)).optional(),
-              },
-            )
-            .openapi('EventLogPatchRequest'),
-        },
-      },
-    },
+    params: EventLogKey,
+    body: JsonRequest(EventLogPatch),
   },
-  responses: JsonResponse(EventLogSchema),
+  responses: JsonResponse(z.boolean()),
 })
 
-appServer.openapi(eventLogPatch, async (c) => {
+PatchEventLog.openapi(route, async (c) => {
+  const { id } = c.req.valid('param')
   const json = c.req.valid('json')
-  const db = drizzle(c.env.DB)
-  const result = await db
+  const db = getDrizzleInstance(c.env.DB)
+
+  await db
     .update(eventLog)
     .set(json)
-    .where(eq(eventLog.id, json.id))
+    .where(eq(eventLog.id, id))
     .returning()
     .get()
 
-  return c.json(convertDateToString(result))
+  return c.json(true)
 })
+
+export default PatchEventLog

@@ -2,33 +2,45 @@ import { version } from '#/package.json'
 import { getAppInstance } from '@/core'
 import { BabyService } from '@/service/baby.service'
 import { z } from '@hono/zod-openapi'
+import { every, some } from 'hono/combine'
+import { contextStorage } from 'hono/context-storage'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
+import { requestId } from 'hono/request-id'
+import { secureHeaders } from 'hono/secure-headers'
 import { fromZodError } from 'zod-validation-error'
 
 const app = getAppInstance().basePath('api')
 
-// first
-app.use('*', logger())
+app.use(contextStorage())
 
-// second
+function customLogger(message: string, ...rest: string[]) {
+  console.log(message, ...rest)
+}
+
+// first
 app.use(
   '*',
-  cors({
-    origin: (origin) => {
-      if (origin.endsWith('.littleeleven.com')) {
-        return origin
-      }
-      return 'https://littleeleven.com'
-    },
-    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    exposeHeaders: ['authorization'],
-    allowHeaders: ['authorization', 'content-type'],
-    maxAge: 86400,
-  }),
+  every(
+    secureHeaders(),
+    requestId(),
+    logger(customLogger),
+    cors({
+      origin: (origin) => {
+        if (origin.endsWith('.littleeleven.com')) {
+          return origin
+        }
+        return 'https://littleeleven.com'
+      },
+      allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+      exposeHeaders: ['authorization'],
+      allowHeaders: ['authorization', 'content-type'],
+      maxAge: 86400,
+    }),
+  ),
 )
 
-// third
+// second
 // service middleware
 app.use('*', async (ctx, next) => {
   const d1 = ctx.env.DB

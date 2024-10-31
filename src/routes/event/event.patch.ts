@@ -1,50 +1,31 @@
-import { EventSchema } from '@/service/event/schemas/event'
-import { convertDateToString } from '@/utils/formatDatetime'
+import { getAppInstance, getDrizzleInstance } from '@/core'
+import { Event, EventPatch } from '@/zodSchemas/Event'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
 import { event } from '~drizzle/schema/event'
 import { eq } from 'drizzle-orm'
-import { drizzle } from 'drizzle-orm/d1'
 
-const EventPatchSchema = EventSchema
-  .pick(
-    {
-      id: true,
-      name: true,
-      displayName: true,
-      icon: true,
-      extraFields: true,
-    },
-  )
-  .partial(
-    {
-      name: true,
-      displayName: true,
-      icon: true,
-      extraFields: true,
-    },
-  )
-  .openapi('EventPatchRequest')
+const PatchEvent = getAppInstance()
 
-const eventPatch = createRoute({
+const route = createRoute({
   method: 'patch',
-  path: '/api/event',
+  path: '',
   request: {
     body: {
-      required: true,
       content: {
         'application/json': {
-          schema: EventPatchSchema.or(z.array(EventPatchSchema)),
+          schema: EventPatch.or(z.array(EventPatch)),
         },
       },
     },
   },
-  responses: JsonResponse(EventSchema.or(z.array(EventSchema))),
+  responses: JsonResponse(Event.or(z.array(Event))),
 })
 
-appServer.openapi(eventPatch, async (c) => {
+PatchEvent.openapi(route, async (c) => {
   const json = c.req.valid('json')
-  const db = drizzle(c.env.DB)
+  const db = getDrizzleInstance(c.env.DB)
+
   if (Array.isArray(json)) {
     const result = []
     for (const e of json) {
@@ -56,7 +37,7 @@ appServer.openapi(eventPatch, async (c) => {
         .get()
       result.push(r)
     }
-    return c.json(convertDateToString(result))
+    return c.json(result)
   }
   else {
     const result = await db
@@ -65,6 +46,8 @@ appServer.openapi(eventPatch, async (c) => {
       .where(eq(event.id, json.id))
       .returning()
       .get()
-    return c.json(convertDateToString(result))
+    return c.json(result)
   }
 })
+
+export default PatchEvent
