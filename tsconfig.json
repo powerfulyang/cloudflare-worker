@@ -28,7 +28,7 @@
 
     /* Modules */
     "module": "ESNext", /* Specify the root folder within your source files. */
-    "moduleResolution": "node", /* Specify the base directory to resolve non-relative module names. */
+    "moduleResolution": "Bundler", /* Specify the base directory to resolve non-relative module names. */
     "paths": {
       "@/*": ["src/*"],
       "~drizzle/*": ["drizzle/*"],
@@ -40,6 +40,7 @@
     // "typeRoots": [],                                  /* Specify multiple folders that act like `./node_modules/@types`. */
     "types": [
       "@cloudflare/workers-types",
+			"@cloudflare/vitest-pool-workers",
       "vitest/globals"
     ], /* Enable importing .json files */
     // "noResolve": true,                                /* Disallow `import`s, `require`s or `<reference>`s from expanding the number of files TypeScript should add to a project. */
