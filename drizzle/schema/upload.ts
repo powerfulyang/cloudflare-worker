@@ -18,7 +18,7 @@ export const bucket = sqliteTable(
   },
   (t) => {
     return {
-      uniqueNotDeleted: uniqueIndex('unique_name_not_deleted')
+      uniqueNotDeleted: uniqueIndex('unique_bucket_name_not_deleted')
         .on(t.name)
         .where(eq(t.deleted, false)),
     }

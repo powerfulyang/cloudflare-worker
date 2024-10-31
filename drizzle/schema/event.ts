@@ -5,7 +5,7 @@ export const event = sqliteTable(
   'event',
   {
     id: integer('id').primaryKey({ autoIncrement: true }),
-    name: text('name').notNull().unique(),
+    name: text('name').notNull(),
     displayName: text('display_name').notNull(),
     icon: text('icon').notNull(),
     extraFields: text('extra_fields', { mode: 'json' })
@@ -22,7 +22,7 @@ export const event = sqliteTable(
   },
   (t) => {
     return {
-      uniqueNotDeleted: uniqueIndex('unique_name_not_deleted')
+      uniqueNotDeleted: uniqueIndex('unique_event_name_not_deleted')
         .on(t.name)
         .where(eq(t.deleted, false)),
     }
