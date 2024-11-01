@@ -1,10 +1,11 @@
+import type { AppEnv } from '@/core'
 import { getAppInstance, getDrizzleInstance } from '@/core'
-import { isLocalDev } from '@/utils'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { UploadResult } from '@/zodSchemas/Upload'
 import { createRoute, z } from '@hono/zod-openapi'
 import { bucket, upload } from '~drizzle/schema/upload'
 import { eq } from 'drizzle-orm'
+import { getContext } from 'hono/context-storage'
 import { sha256 } from 'hono/utils/crypto'
 
 const PostUpload = getAppInstance()
@@ -20,7 +21,6 @@ const route = createRoute({
             .object(
               {
                 file: z.instanceof(File),
-                bucketName: z.string().optional(),
               },
             )
             .openapi('UploadFile'),
@@ -31,20 +31,17 @@ const route = createRoute({
   responses: JsonResponse(UploadResult),
 })
 
-export async function uploadFile(env: Bindings, options: {
-  file: File
-  bucketName?: string
-}) {
-  const defaultBucketName = isLocalDev(env) ? 'test' : 'eleven'
-  const { file, bucketName = defaultBucketName } = options
-
+export async function uploadFile(file: File) {
+  const c = getContext<AppEnv>()
+  const env = c.env
+  const bucketName = c.env.BUCKET_NAME
   const hash = (await sha256(await file.arrayBuffer()))!
   const db = getDrizzleInstance(env.DB)
 
   // 判断文件是否已经上传, 使用 head 方法
-  const head = await env.MY_BUCKET.head(hash)
+  const head = await env.BUCKET.head(hash)
   if (!head) {
-    await env.MY_BUCKET.put(hash, file.stream(), {
+    await env.BUCKET.put(hash, file.stream(), {
       httpMetadata: {
         contentType: file.type,
       },
@@ -71,12 +68,8 @@ export async function uploadFile(env: Bindings, options: {
 PostUpload.openapi(route, async (c) => {
   const form = c.req.valid('form')
   const file = form.file
-  const bucketName = form.bucketName
 
-  const result = await uploadFile(c.env, {
-    file,
-    bucketName,
-  })
+  const result = await uploadFile(file)
 
   return c.json(result)
 })

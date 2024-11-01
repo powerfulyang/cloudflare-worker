@@ -1,8 +1,9 @@
 declare global {
   interface Bindings {
     DB: D1Database
-    MY_BUCKET: R2Bucket
-    ENVIRONMENT: 'development' | undefined
+    BUCKET: R2Bucket
+    ENVIRONMENT: 'staging' | 'production'
+    BUCKET_NAME: string
   }
 }
 

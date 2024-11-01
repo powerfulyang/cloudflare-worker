@@ -10,14 +10,13 @@ export function getDrizzleInstance(d1Database: D1Database) {
   })
 }
 
+export interface AppEnv {
+  Bindings: Bindings
+  Variables: {
+    babyService: BabyService
+  }
+}
+
 export function getAppInstance() {
-  return new OpenAPIHono<
-    {
-      Bindings: Bindings
-      Variables: {
-        bucketName: 'eleven' | 'test'
-        babyService: BabyService
-      }
-    }
-  >()
+  return new OpenAPIHono<AppEnv>()
 }

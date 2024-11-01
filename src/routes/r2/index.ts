@@ -13,7 +13,7 @@ R2Route.route('upload', PostUpload)
 
 R2Route.get('upload/:hash', async (c) => {
   const { hash } = c.req.param()
-  const response = await c.env.MY_BUCKET.get(hash)
+  const response = await c.env.BUCKET.get(hash)
   if (!response) {
     throw new HTTPException(404)
   }

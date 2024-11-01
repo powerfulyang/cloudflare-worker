@@ -7,6 +7,7 @@
     "start:local": "wrangler dev --port 12345",
     "start:remote": "wrangler dev --remote",
     "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy -e production",
     "openapi": "run-s openapi:*",
     "openapi:generate": "curl http://localhost:12345/api/doc > ./openapi.json",
     "openapi:format": "node format-json.js",

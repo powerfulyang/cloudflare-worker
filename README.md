@@ -49,7 +49,7 @@ Example:
 
 ```toml
 [[r2_buckets]]
-binding = "MY_BUCKET"
+binding = "BUCKET"
 bucket_name = "<bucket-name>"
 ```
 
