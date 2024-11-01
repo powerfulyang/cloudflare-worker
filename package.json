@@ -22,6 +22,7 @@
     "e2e:test": "vitest --e2e --run tests/**/*.e2e.spec.ts"
   },
   "dependencies": {
+    "@hono/oauth-providers": "^0.6.2",
     "@hono/zod-openapi": "^0.16.4",
     "dayjs": "^1.11.13",
     "drizzle-orm": "^0.36.0",
