@@ -19,3 +19,6 @@ mode = "smart"
 binding = 'MY_BUCKET' # <~ valid JavaScript variable name
 bucket_name = 'eleven'
 preview_bucket_name = 'test'
+
+[observability]
+enabled = true
