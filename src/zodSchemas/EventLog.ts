@@ -1,4 +1,4 @@
-import { Event } from '@/zodSchemas/Event'
+import { EventResult } from '@/zodSchemas/Event'
 import { z } from '@hono/zod-openapi'
 import { eventLog } from '~drizzle/schema/event'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
@@ -8,7 +8,7 @@ export const EventLog = createSelectSchema(eventLog)
 
 export const EventLogResult = EventLog
   .extend({
-    event: Event,
+    event: EventResult,
   })
   .openapi('EventLogResult')
 

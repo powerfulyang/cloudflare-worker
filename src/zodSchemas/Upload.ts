@@ -1,9 +1,9 @@
-import { Bucket } from '@/zodSchemas/Bucket'
+import { BucketResult } from '@/zodSchemas/Bucket'
 import { upload } from '~drizzle/schema'
 import { createSelectSchema } from 'drizzle-zod'
 
-export const Upload = createSelectSchema(upload)
+export const UploadResult = createSelectSchema(upload)
   .extend({
-    bucket: Bucket,
+    bucket: BucketResult,
   })
-  .openapi('Upload')
+  .openapi('UploadResult')

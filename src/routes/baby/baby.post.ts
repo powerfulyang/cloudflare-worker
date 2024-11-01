@@ -12,16 +12,16 @@ const route = createRoute({
   request: {
     body: JsonRequest(BabyPost),
   },
-  responses: JsonResponse(z.any()),
+  responses: JsonResponse(z.boolean()),
 })
 
 PostBaby.openapi(route, async (c) => {
   const json = c.req.valid('json')
 
   const babyService = c.get('babyService')
-  const result = await babyService.create(json)
+  await babyService.create(json)
 
-  return c.json(result)
+  return c.json(true)
 })
 
 export default PostBaby

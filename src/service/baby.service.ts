@@ -1,4 +1,4 @@
-import type { BabyPatch, BabyPost } from '@/zodSchemas/Baby'
+import type { BabyPatch, BabyPost, BabyResult } from '@/zodSchemas/Baby'
 import type { z } from '@hono/zod-openapi'
 import { BaseService } from '@/core/base.service'
 import { baby } from '~drizzle/schema'
@@ -9,7 +9,7 @@ export class BabyService extends BaseService {
     super(d1)
   }
 
-  getById(id: number) {
+  async getById(id: number): Promise<z.infer<typeof BabyResult> | undefined> {
     return this.db.query.baby.findFirst({
       with: {
         avatar: {
@@ -27,19 +27,12 @@ export class BabyService extends BaseService {
       .update(baby)
       .set(json)
       .where(eq(baby.id, id))
-
-    return this.getById(id)
   }
 
   async create(json: z.infer<typeof BabyPost>) {
-    const { id } = await this.db
+    await this.db
       .insert(baby)
       .values(json)
-      .returning({
-        id: baby.id,
-      })
-      .get()
-
-    return this.getById(id)
+      .execute()
   }
 }

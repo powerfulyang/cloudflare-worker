@@ -1,4 +1,4 @@
-import { eq, relations } from 'drizzle-orm'
+import { eq, relations, sql } from 'drizzle-orm'
 import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 export const event = sqliteTable(
@@ -24,7 +24,7 @@ export const event = sqliteTable(
     return {
       uniqueNotDeleted: uniqueIndex('unique_event_name_not_deleted')
         .on(t.name)
-        .where(eq(t.deleted, false)),
+        .where(eq(t.deleted, sql`false`)),
     }
   },
 )

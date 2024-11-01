@@ -8,7 +8,7 @@
     "start:remote": "wrangler dev --remote",
     "deploy": "wrangler deploy",
     "openapi": "run-s openapi:*",
-    "openapi:generate": "curl http://localhost:8787/api/doc > ./openapi.json",
+    "openapi:generate": "curl http://localhost:12345/api/doc > ./openapi.json",
     "openapi:format": "node format-json.js",
     "generate:sql": "drizzle-kit generate",
     "login": "wrangler login",
@@ -17,8 +17,8 @@
     "d1:export:remote": "wrangler d1 export eleven --remote --output=./remote.sql",
     "tsc-check": "tsc --noEmit",
     "lint": "eslint . --fix",
-		"unit:test": "vitest --run --exclude tests/**/*.e2e.spec.ts",
-		"e2e:test": "vitest --e2e --run tests/**/*.e2e.spec.ts"
+    "unit:test": "vitest --run --exclude tests/**/*.e2e.spec.ts",
+    "e2e:test": "vitest --e2e --run tests/**/*.e2e.spec.ts"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.16.4",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.8.0",
-    "@cloudflare/vitest-pool-workers": "^0.5.23",
+    "@cloudflare/vitest-pool-workers": "^0.5.24",
     "@cloudflare/workers-types": "^4.20241022.0",
     "@types/jest": "^29.5.14",
     "drizzle-kit": "^0.27.0",
@@ -40,6 +40,6 @@
     "typescript": "^5.6.3",
     "vite-tsconfig-paths": "^5.0.1",
     "vitest": "^2.1.4",
-    "wrangler": "^3.84.0"
+    "wrangler": "^3.84.1"
   }
 }

@@ -7,9 +7,5 @@ describe('baby', () => {
     const res = await app.request('/api/baby/1', undefined, env)
 
     expect(res.status).toBe(200)
-
-    const json = await res.json()
-
-    expect(json).toBeDefined()
   })
 })

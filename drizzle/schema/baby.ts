@@ -8,7 +8,7 @@ export const baby = sqliteTable('baby', {
   bornAt: text('born_at').notNull(),
   // 0 is girl, 1 is boy
   gender: integer('gender').default(0).notNull(),
-  avatar: integer('avatar').default(1).notNull().references(() => upload.id),
+  avatar: integer('avatar').references(() => upload.id),
   deleted: integer('deleted', { mode: 'boolean' }).notNull().default(false),
   createdAt: integer('created_at', { mode: 'timestamp_ms' })
     .notNull()

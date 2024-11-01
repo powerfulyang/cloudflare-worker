@@ -38,11 +38,11 @@ export const EventExtraFieldsSchema = z.array(
   .default([])
   .openapi('EventExtraFields')
 
-export const Event = createSelectSchema(event)
+export const EventResult = createSelectSchema(event)
   .extend({
     extraFields: EventExtraFieldsSchema,
   })
-  .openapi('Event')
+  .openapi('EventResult')
 
 export const EventPost = createInsertSchema(event)
   .extend({
@@ -56,7 +56,7 @@ export const EventPost = createInsertSchema(event)
   })
   .openapi('EventPost')
 
-export const EventPatch = Event
+export const EventPatch = EventResult
   .pick({
     id: true,
     name: true,
@@ -71,3 +71,18 @@ export const EventPatch = Event
     extraFields: true,
   })
   .openapi('EventPatch')
+
+export const EventKey = z
+  .object(
+    {
+      id: z.coerce.number().int().positive().openapi(
+        {
+          description: 'The id of the event to get',
+          param: {
+            in: 'path',
+          },
+        },
+      ),
+    },
+  )
+  .openapi('EventKey')

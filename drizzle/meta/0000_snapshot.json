@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d28293b5-1d68-48f1-b07d-c2af30726faf",
+  "id": "dcefe256-2440-4094-a614-cadabbefc1e9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "baby": {
@@ -40,9 +40,8 @@
           "name": "avatar",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1
+          "notNull": false,
+          "autoincrement": false
         },
         "deleted": {
           "name": "deleted",
@@ -155,7 +154,7 @@
             "name"
           ],
           "isUnique": true,
-          "where": "\"event\".\"deleted\" = ?"
+          "where": "\"event\".\"deleted\" = false"
         }
       },
       "foreignKeys": {},
@@ -342,7 +341,7 @@
             "upload_id"
           ],
           "isUnique": true,
-          "where": "\"moments_to_uploads\".\"deleted\" = ?"
+          "where": "\"moments_to_uploads\".\"deleted\" = false"
         }
       },
       "foreignKeys": {
@@ -431,7 +430,7 @@
             "name"
           ],
           "isUnique": true,
-          "where": "\"bucket\".\"deleted\" = ?"
+          "where": "\"bucket\".\"deleted\" = false"
         }
       },
       "foreignKeys": {},

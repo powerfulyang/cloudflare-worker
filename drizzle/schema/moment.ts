@@ -1,5 +1,5 @@
 import { upload } from '~drizzle/schema/upload'
-import { eq, relations } from 'drizzle-orm'
+import { eq, relations, sql } from 'drizzle-orm'
 import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 export const moment = sqliteTable('moment', {
@@ -28,7 +28,7 @@ export const momentsToUploads = sqliteTable(
     return {
       uniqueNotDeleted: uniqueIndex('unique_moment_upload')
         .on(t.momentId, t.uploadId)
-        .where(eq(t.deleted, false)),
+        .where(eq(t.deleted, sql`false`)),
     }
   },
 )

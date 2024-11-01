@@ -1,4 +1,4 @@
-import { Upload } from '@/zodSchemas/Upload'
+import { UploadResult } from '@/zodSchemas/Upload'
 import { z } from '@hono/zod-openapi'
 import { moment } from '~drizzle/schema/moment'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
@@ -7,7 +7,7 @@ export const Moment = createSelectSchema(moment)
   .extend({
     attachments: z.array(
       z.object({
-        upload: Upload,
+        upload: UploadResult,
       }),
     ),
   })

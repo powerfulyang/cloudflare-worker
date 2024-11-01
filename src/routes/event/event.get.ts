@@ -1,5 +1,5 @@
 import { getAppInstance, getDrizzleInstance } from '@/core'
-import { Event } from '@/zodSchemas/Event'
+import { EventResult } from '@/zodSchemas/Event'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
 
@@ -8,7 +8,7 @@ const GetEvent = getAppInstance()
 const route = createRoute({
   method: 'get',
   path: '',
-  responses: JsonResponse(z.array(Event)),
+  responses: JsonResponse(z.array(EventResult)),
 })
 
 GetEvent.openapi(route, async (c) => {

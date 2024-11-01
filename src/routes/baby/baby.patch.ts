@@ -1,8 +1,8 @@
 import { getAppInstance } from '@/core'
-import { Baby, BabyKey, BabyPatch } from '@/zodSchemas/Baby'
+import { BabyKey, BabyPatch } from '@/zodSchemas/Baby'
 import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
-import { createRoute } from '@hono/zod-openapi'
+import { createRoute, z } from '@hono/zod-openapi'
 
 const PatchBabyId = getAppInstance()
 
@@ -14,7 +14,7 @@ const route = createRoute({
     params: BabyKey,
     body: JsonRequest(BabyPatch),
   },
-  responses: JsonResponse(Baby),
+  responses: JsonResponse(z.boolean()),
 })
 
 PatchBabyId.openapi(route, async (c) => {
@@ -22,9 +22,9 @@ PatchBabyId.openapi(route, async (c) => {
   const json = c.req.valid('json')
 
   const babyService = c.get('babyService')
-  const result = await babyService.updateById(id, json)
+  await babyService.updateById(id, json)
 
-  return c.json(result)
+  return c.json(true)
 })
 
 export default PatchBabyId

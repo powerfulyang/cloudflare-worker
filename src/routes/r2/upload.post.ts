@@ -1,7 +1,7 @@
 import { getAppInstance, getDrizzleInstance } from '@/core'
 import { isLocalDev } from '@/utils'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
-import { Upload } from '@/zodSchemas/Upload'
+import { UploadResult } from '@/zodSchemas/Upload'
 import { createRoute, z } from '@hono/zod-openapi'
 import { bucket, upload } from '~drizzle/schema/upload'
 import { eq } from 'drizzle-orm'
@@ -28,7 +28,7 @@ const route = createRoute({
       },
     },
   },
-  responses: JsonResponse(Upload),
+  responses: JsonResponse(UploadResult),
 })
 
 export async function uploadFile(env: Bindings, options: {

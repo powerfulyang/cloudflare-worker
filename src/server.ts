@@ -2,9 +2,10 @@ import { version } from '#/package.json'
 import { getAppInstance } from '@/core'
 import { BabyService } from '@/service/baby.service'
 import { z } from '@hono/zod-openapi'
-import { every, some } from 'hono/combine'
+import { every } from 'hono/combine'
 import { contextStorage } from 'hono/context-storage'
 import { cors } from 'hono/cors'
+import { HTTPException } from 'hono/http-exception'
 import { logger } from 'hono/logger'
 import { requestId } from 'hono/request-id'
 import { secureHeaders } from 'hono/secure-headers'
@@ -14,17 +15,13 @@ const app = getAppInstance().basePath('api')
 
 app.use(contextStorage())
 
-function customLogger(message: string, ...rest: string[]) {
-  console.log(message, ...rest)
-}
-
 // first
 app.use(
   '*',
   every(
     secureHeaders(),
     requestId(),
-    logger(customLogger),
+    logger(),
     cors({
       origin: (origin) => {
         if (origin.endsWith('.littleeleven.com')) {
@@ -50,6 +47,7 @@ app.use('*', async (ctx, next) => {
 
 // Error handler
 app.onError((error, ctx) => {
+  console.error(error)
   if (error instanceof z.ZodError) {
     return ctx.json(
       {
@@ -57,6 +55,15 @@ app.onError((error, ctx) => {
         source: 'zod_error_handler',
       },
       422,
+    )
+  }
+  if (error instanceof HTTPException) {
+    return ctx.json(
+      {
+        error: error.message,
+        source: 'status_error_handler',
+      },
+      error.status,
     )
   }
   return ctx.json(

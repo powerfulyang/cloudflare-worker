@@ -7,7 +7,7 @@ compatibility_flags = [ "nodejs_compat" ]
 crons = []
 
 [[d1_databases]]
-binding = "DB"
+binding = "DB" # <~ valid JavaScript variable name
 database_name = "eleven"
 database_id = "99f20991-68ed-41cd-9784-ca820b8260b7"
 preview_database_id = "28f2f11b-85d5-4d63-92da-4eebb2ade8a4"

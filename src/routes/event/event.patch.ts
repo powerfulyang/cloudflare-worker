@@ -1,7 +1,8 @@
 import { getAppInstance, getDrizzleInstance } from '@/core'
-import { Event, EventPatch } from '@/zodSchemas/Event'
+import { EventKey, EventPatch, EventResult } from '@/zodSchemas/Event'
+import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
-import { createRoute, z } from '@hono/zod-openapi'
+import { createRoute } from '@hono/zod-openapi'
 import { event } from '~drizzle/schema/event'
 import { eq } from 'drizzle-orm'
 
@@ -9,45 +10,26 @@ const PatchEvent = getAppInstance()
 
 const route = createRoute({
   method: 'patch',
-  path: '',
+  path: ':id',
   request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: EventPatch.or(z.array(EventPatch)),
-        },
-      },
-    },
+    params: EventKey,
+    body: JsonRequest(EventPatch),
   },
-  responses: JsonResponse(Event.or(z.array(Event))),
+  responses: JsonResponse(EventResult),
 })
 
 PatchEvent.openapi(route, async (c) => {
+  const { id } = c.req.valid('param')
   const json = c.req.valid('json')
   const db = getDrizzleInstance(c.env.DB)
 
-  if (Array.isArray(json)) {
-    const result = []
-    for (const e of json) {
-      const r = await db
-        .update(event)
-        .set(e)
-        .where(eq(event.id, e.id))
-        .returning()
-        .get()
-      result.push(r)
-    }
-    return c.json(result)
-  }
-  else {
-    const result = await db
-      .update(event)
-      .set(json)
-      .where(eq(event.id, json.id))
-      .returning()
-      .get()
-    return c.json(result)
-  }
+  const result = await db
+    .update(event)
+    .set(json)
+    .where(eq(event.id, id))
+    .returning()
+    .get()
+  return c.json(result)
 })
 
 export default PatchEvent

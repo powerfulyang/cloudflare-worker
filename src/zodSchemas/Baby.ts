@@ -1,15 +1,15 @@
-import { Upload } from '@/zodSchemas/Upload'
+import { UploadResult } from '@/zodSchemas/Upload'
 import { z } from '@hono/zod-openapi'
 import { baby } from '~drizzle/schema'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 
-export const Baby = createSelectSchema(baby)
+export const BabyResult = createSelectSchema(baby)
   .extend(
     {
-      avatar: Upload,
+      avatar: UploadResult.nullable(),
     },
   )
-  .openapi('Baby')
+  .openapi('BabyResult')
 
 export const BabyPatch = createInsertSchema(baby)
   .partial()

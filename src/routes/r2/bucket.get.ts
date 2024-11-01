@@ -1,5 +1,5 @@
 import { getAppInstance, getDrizzleInstance } from '@/core'
-import { Bucket } from '@/zodSchemas/Bucket'
+import { BucketResult } from '@/zodSchemas/Bucket'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
 import { bucket } from '~drizzle/schema/upload'
@@ -20,7 +20,7 @@ const route = createRoute({
       }),
     }),
   },
-  responses: JsonResponse(Bucket),
+  responses: JsonResponse(BucketResult),
 })
 
 GetBucket.openapi(route, async (c) => {

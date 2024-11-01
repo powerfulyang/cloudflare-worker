@@ -1,5 +1,5 @@
 import { getAppInstance, getDrizzleInstance } from '@/core'
-import { Bucket, BucketPost } from '@/zodSchemas/Bucket'
+import { BucketPost, BucketResult } from '@/zodSchemas/Bucket'
 import { JsonRequest } from '@/zodSchemas/JsonRequest'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute } from '@hono/zod-openapi'
@@ -13,7 +13,7 @@ const route = createRoute({
   request: {
     body: JsonRequest(BucketPost),
   },
-  responses: JsonResponse(Bucket),
+  responses: JsonResponse(BucketResult),
 })
 
 PostBucket.openapi(route, async (c) => {

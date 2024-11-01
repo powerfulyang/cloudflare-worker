@@ -1,6 +1,6 @@
 import type { SQL } from 'drizzle-orm'
 import { getAppInstance, getDrizzleInstance } from '@/core'
-import { Event } from '@/zodSchemas/Event'
+import { EventResult } from '@/zodSchemas/Event'
 import { EventLog } from '@/zodSchemas/EventLog'
 import { JsonResponse } from '@/zodSchemas/JsonResponse'
 import { createRoute, z } from '@hono/zod-openapi'
@@ -29,7 +29,7 @@ const route = createRoute({
   },
   responses: JsonResponse(
     z.array(
-      Event
+      EventResult
         .pick({
           displayName: true,
         })
@@ -56,6 +56,7 @@ GetEventLogDistinct.openapi(route, async (c) => {
       eq(sql`DATE(${eventLog.eventTime} / 1000, 'unixepoch','+8 hours')`, date),
     )
   }
+
   const result = await db
     .select({
       eventName: eventLog.eventName,

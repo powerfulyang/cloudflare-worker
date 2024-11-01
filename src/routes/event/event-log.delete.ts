@@ -33,7 +33,7 @@ DeleteEventLog.openapi(route, async (c) => {
     .where(eq(eventLog.id, id))
     .execute()
 
-  return c.newResponse(null, 204)
+  return c.json(null, 204)
 })
 
 export default DeleteEventLog

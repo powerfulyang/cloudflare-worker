@@ -1,23 +1,30 @@
-# 一个较为完备的 Cloudflare Workers 教程
+# A Comprehensive Cloudflare Workers Tutorial
 
-## 介绍
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/powerfulyang/cloudflare-worker-tutorial)
 
-本教程将带你从零开始，一步步学习如何使用 Cloudflare Workers 开发专属于你的 API 服务。
+## Introduction
+
+This tutorial will guide you step by step from scratch on how to develop your own API service using Cloudflare Workers.
 
 Preview: https://life.littleeleven.com
 
-## 安装依赖
+## Install Dependencies
 
-推荐使用 `[pnpm](https://pnpm.io/installation)` 安装依赖
+Recommended to use [pnpm](https://pnpm.io/installation) to install dependencies
 
 ```bash
 pnpm install
 ```
 
-## 配置 wrangler
+## Configure wrangler
 
-设置 `wrangler.toml` 中 d1_database 字段为你的数据库相关信息 (**必须**)
-具体内容类似下面：
+### Configure D1 database
+
+> Related documentation: https://developers.cloudflare.com/workers/wrangler/commands/#d1
+
+Set the `d1_database` field in `wrangler.toml` to your database information (**required**)
+
+Example:
 
 ```toml
 [[d1_databases]]
@@ -26,42 +33,52 @@ database_name = "<database-name>"
 database_id = "<database-id>"
 ```
 
-## 配置开发环境之 D1 database
+### Sync table structure
 
-> 相关文档: https://developers.cloudflare.com/workers/wrangler/commands/#d1
-
-### 同步表结构
-
-同步 `drizzle` 的 sql 文件，即使用 d1 execute 命令执行
+Sync the sql files of `drizzle`, execute the following command using `d1 execute` command
 
 ```bash
-wrangler d1 execute eleven --file .\drizzle\0000_high_marauders.sql
+wrangler d1 execute eleven --file .\drizzle\0000_reflective_dracula.sql
 ```
 
-## 启动
+### Configure R2 bucket
 
-执行以下命令启动本地开发服务器
+Set the `r2_bucket` field in `wrangler.toml` to your bucket information (**required**)
+
+Example:
+
+```toml
+[[r2_buckets]]
+binding = "MY_BUCKET"
+bucket_name = "<bucket-name>"
+```
+
+## Start local development server
+
+Execute the following command to start the local development server
 
 ```bash
+# run your Worker in an ideal development workflow (with a local server, file watcher & more)
 pnpm run start:local
 ```
-## 测试
 
-### 单元测试
+## Test
+
+### Unit test
 
 ```bash
 pnpm run unit:test
 ```
 
-### 集成测试
+### Integration test
 
 ```bash
 pnpm run e2e:test
 ```
 
-## 部署
+## Deploy
 
 ```bash
+# deploy your Worker globally to the Cloudflare network (update your wrangler.toml file for configuration)
 pnpm run deploy
 ```
-

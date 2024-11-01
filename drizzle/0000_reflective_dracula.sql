@@ -3,7 +3,7 @@ CREATE TABLE `baby` (
 	`name` text NOT NULL,
 	`born_at` text NOT NULL,
 	`gender` integer DEFAULT 0 NOT NULL,
-	`avatar` integer DEFAULT 1 NOT NULL,
+	`avatar` integer,
 	`deleted` integer DEFAULT false NOT NULL,
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL,
