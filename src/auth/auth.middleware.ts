@@ -3,12 +3,14 @@ import { discordAuth } from '@hono/oauth-providers/discord'
 import { googleAuth } from '@hono/oauth-providers/google'
 
 app.get(
-  'auth/google', // -> redirect_uri by default
+  'auth/google',
   googleAuth({
     scope: ['email', 'profile'],
   }),
-  (c) => {
-    const user = c.get('user-google')
+  async (c) => {
+    const googleUser = c.get('user-google')
+    const authService = c.get('authService')
+    const user = await authService.findOrCreateGoogleUser(googleUser)
 
     return c.json({
       user,
@@ -20,10 +22,11 @@ app.get(
   'auth/discord',
   discordAuth({
     scope: ['email', 'identify'],
-    redirect_uri: 'https://tunnel.littleeleven.com/api/auth/discord',
   }),
-  (c) => {
-    const user = c.get('user-discord')
+  async (c) => {
+    const discordUser = c.get('user-discord')
+    const authService = c.get('authService')
+    const user = await authService.findOrCreateDiscordUser(discordUser)
 
     return c.json({
       user,

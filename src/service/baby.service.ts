@@ -5,12 +5,8 @@ import { baby } from '~drizzle/schema'
 import { eq } from 'drizzle-orm'
 
 export class BabyService extends BaseService {
-  constructor(private readonly d1: D1Database) {
-    super(d1)
-  }
-
   async getById(id: number): Promise<z.infer<typeof BabyResult> | undefined> {
-    return this.db.query.baby.findFirst({
+    return this.drizzle.query.baby.findFirst({
       with: {
         avatar: {
           with: {
@@ -23,14 +19,14 @@ export class BabyService extends BaseService {
   }
 
   async updateById(id: number, json: z.infer<typeof BabyPatch>) {
-    await this.db
+    await this.drizzle
       .update(baby)
       .set(json)
       .where(eq(baby.id, id))
   }
 
   async create(json: z.infer<typeof BabyPost>) {
-    await this.db
+    await this.drizzle
       .insert(baby)
       .values(json)
       .execute()

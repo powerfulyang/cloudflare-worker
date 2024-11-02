@@ -1,7 +1,10 @@
 import { version } from '#/package.json'
 import { getAppInstance } from '@/core'
+import { AuthService } from '@/service/auth.service'
 import { BabyService } from '@/service/baby.service'
 import { z } from '@hono/zod-openapi'
+import { PrismaD1 } from '@prisma/adapter-d1'
+import { PrismaClient } from '@prisma/client'
 import { every } from 'hono/combine'
 import { contextStorage } from 'hono/context-storage'
 import { cors } from 'hono/cors'
@@ -38,10 +41,18 @@ app.use(
 )
 
 // second
+// 增加 prisma 的中间件
+app.use('*', async (ctx, next) => {
+  const adapter = new PrismaD1(ctx.env.DB)
+  const prisma = new PrismaClient({ adapter })
+  ctx.set('prisma', prisma)
+  await next()
+})
+
 // service middleware
 app.use('*', async (ctx, next) => {
-  const d1 = ctx.env.DB
-  ctx.set('babyService', new BabyService(d1))
+  ctx.set('babyService', new BabyService())
+  ctx.set('authService', new AuthService())
   await next()
 })
 

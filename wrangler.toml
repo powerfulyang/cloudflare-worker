@@ -1,20 +1,26 @@
 name = "staging_api_littleeleven_com"
 main = "src/index.ts"
 compatibility_date = "2024-10-22"
-compatibility_flags = [ "nodejs_compat" ]
+compatibility_flags = ["nodejs_compat"]
 
 # env
 vars = { ENVIRONMENT = "staging", BUCKET_NAME = "littleeleven-dev" }
 route = { pattern = "staging.api.littleeleven.com", custom_domain = true }
-d1_databases = [ { binding = "DB", database_id = "cdfc200d-9c48-4743-82c1-d0693d5bd98c", preview_database_id = "cdfc200d-9c48-4743-82c1-d0693d5bd98c" } ]
-r2_buckets = [ { binding = "BUCKET", bucket_name = "littleeleven-dev", preview_bucket_name = "littleeleven-dev" } ]
+d1_databases = [
+    { binding = "DB", database_name = "littleeleven-dev", database_id = "cdfc200d-9c48-4743-82c1-d0693d5bd98c", preview_database_id = "cdfc200d-9c48-4743-82c1-d0693d5bd98c" },
+]
+r2_buckets = [
+    { binding = "BUCKET", bucket_name = "littleeleven-dev", preview_bucket_name = "littleeleven-dev" },
+]
 
 [env.production]
 name = "api_littleeleven_com"
 vars = { ENVIRONMENT = "production", BUCKET_NAME = "littleeleven" }
 route = { pattern = "api.littleeleven.com", custom_domain = true }
-d1_databases = [ { binding = "DB", database_id = "d1f330bd-9fb8-4552-897e-78d8426cbb70" } ]
-r2_buckets = [ { binding = "BUCKET", bucket_name = "littleeleven" } ]
+d1_databases = [
+    { binding = "DB", database_name = "littleeleven", database_id = "d1f330bd-9fb8-4552-897e-78d8426cbb70" },
+]
+r2_buckets = [{ binding = "BUCKET", bucket_name = "littleeleven" }]
 
 [triggers]
 crons = []
