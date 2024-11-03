@@ -5,7 +5,7 @@
   "private": true,
   "packageManager": "pnpm@9.12.3",
   "scripts": {
-		"postinstall": "prisma generate",
+    "postinstall": "prisma generate",
     "start:local": "wrangler dev --port 12345",
     "start:remote": "wrangler dev --remote",
     "deploy": "wrangler deploy",
@@ -14,7 +14,8 @@
     "openapi:generate": "curl http://localhost:12345/api/doc > ./openapi.json",
     "openapi:format": "node format-json.js",
     "drizzle:generate:sql": "drizzle-kit generate",
-		"prisma:generate:sql": "npx prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script --output migrations/0001_create_user_table.sql",
+    "prisma:generate:sql": "prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script --output migrations/prisma-generated.sql",
+		"prisma:migrations:sql": "prisma migrate diff --from-local-d1 --to-schema-datamodel ./prisma/schema.prisma --script --output migrations/prisma-migrations.sql",
     "login": "wrangler login",
     "d1:migrations:local": "wrangler d1 migrations apply littleeleven-dev --local",
     "d1:export:remote": "wrangler d1 export littleeleven --remote --output=./remote.sql",

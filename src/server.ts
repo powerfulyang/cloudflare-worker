@@ -41,13 +41,6 @@ app.use(
 )
 
 // second
-// 增加 prisma 的中间件
-app.use('*', async (ctx, next) => {
-  const adapter = new PrismaD1(ctx.env.DB)
-  const prisma = new PrismaClient({ adapter })
-  ctx.set('prisma', prisma)
-  await next()
-})
 
 // service middleware
 app.use('*', async (ctx, next) => {

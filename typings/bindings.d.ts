@@ -4,6 +4,7 @@ declare global {
     BUCKET: R2Bucket
     ENVIRONMENT: 'staging' | 'production'
     BUCKET_NAME: string
+    JWT_SECRET: string
   }
 }
 
