@@ -16,23 +16,22 @@ type AuthUser = Partial<GoogleUser | DiscordUser | GitHubUser>
 
 export class AuthService extends BaseService {
   // jwt sign
-  private async signJwt(user: User, secret: string) {
-    const token = await sign({
+  async signJwt(user: User, secret: string = this.jwtSecret) {
+    return await sign({
       user,
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 30 days
     }, secret)
-    return token
   }
 
   // jwt verify
-  private async verifyJwt(token: string, secret: string) {
+  async verifyJwt(token: string, secret: string = this.jwtSecret) {
     const { user } = await verify(token, secret)
     return user as User
   }
 
   async login(type: AuthType, user?: AuthUser) {
     const dbUser = await this.findOrCreateUser(type, user)
-    const token = await this.signJwt(dbUser, this.jwtSecret)
+    const token = await this.signJwt(dbUser)
     return {
       user: dbUser,
       token,

@@ -1,5 +1,6 @@
 import type { AuthService } from '@/service/auth.service'
 import type { BabyService } from '@/service/baby.service'
+import type { User } from '@prisma/client'
 import { OpenAPIHono } from '@hono/zod-openapi'
 import { PrismaD1 } from '@prisma/adapter-d1'
 import { PrismaClient } from '@prisma/client'
@@ -26,8 +27,7 @@ export function getDrizzleInstance() {
 export function getPrismaInstance() {
   const d1 = getD1()
   const adapter = new PrismaD1(d1)
-  const prisma = new PrismaClient({ adapter })
-  return prisma
+  return new PrismaClient({ adapter })
 }
 
 export interface AppEnv {
@@ -35,6 +35,7 @@ export interface AppEnv {
   Variables: {
     babyService: BabyService
     authService: AuthService
+    user: User
   }
 }
 

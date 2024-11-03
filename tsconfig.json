@@ -136,6 +136,6 @@
     "drizzle/**/*.ts",
     ".vitest/**/*.ts",
     "tests/**/*.ts",
-		"typings/**/*.ts"
+    "typings/**/*.ts"
   ]
 }

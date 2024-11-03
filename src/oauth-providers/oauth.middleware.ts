@@ -4,7 +4,8 @@ import { AuthType } from '@/service/auth.service'
 import { discordAuth } from '@hono/oauth-providers/discord'
 import { githubAuth } from '@hono/oauth-providers/github'
 import { googleAuth } from '@hono/oauth-providers/google'
-import { setCookie } from 'hono/cookie'
+import { getCookie, setCookie } from 'hono/cookie'
+import { HTTPException } from 'hono/http-exception'
 
 const COOKIE_NAME = 'token'
 const COOKIE_OPTIONS = {
@@ -14,6 +15,27 @@ const COOKIE_OPTIONS = {
   sameSite: 'strict',
   maxAge: 60 * 60 * 24 * 30, // 30 days
 } as CookieOptions
+
+// 鉴权中间件
+app.use('*', async (c, next) => {
+  // 跳过登录相关路由
+  if (c.req.path.startsWith('/api/auth/')) {
+    return next()
+  }
+
+  const token = getCookie(c, COOKIE_NAME)
+  const authService = c.get('authService')
+
+  if (!token) {
+    throw new HTTPException(401, {
+      message: 'Unauthorized',
+    })
+  }
+
+  const user = await authService.verifyJwt(token)
+  c.set('user', user)
+  return next()
+})
 
 app.get(
   'auth/google',

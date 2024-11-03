@@ -15,7 +15,7 @@
     "openapi:format": "node format-json.js",
     "drizzle:generate:sql": "drizzle-kit generate",
     "prisma:generate:sql": "prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script --output migrations/prisma-generated.sql",
-		"prisma:migrations:sql": "prisma migrate diff --from-local-d1 --to-schema-datamodel ./prisma/schema.prisma --script --output migrations/prisma-migrations.sql",
+    "prisma:migrations:sql": "prisma migrate diff --from-local-d1 --to-schema-datamodel ./prisma/schema.prisma --script --output migrations/prisma-migrations.sql",
     "login": "wrangler login",
     "d1:migrations:local": "wrangler d1 migrations apply littleeleven-dev --local",
     "d1:export:remote": "wrangler d1 export littleeleven --remote --output=./remote.sql",
@@ -33,7 +33,6 @@
     "drizzle-orm": "^0.36.0",
     "drizzle-zod": "^0.5.1",
     "hono": "^4.6.8",
-    "minimatch": "^10.0.1",
     "zod-validation-error": "^3.4.0"
   },
   "devDependencies": {
