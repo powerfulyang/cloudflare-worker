@@ -13,7 +13,7 @@ export default defineWorkersConfig(async () => {
       setupFiles: ['./.vitest/apply-migrations.ts'],
       poolOptions: {
         workers: {
-          isolatedStorage: true,
+          isolatedStorage: true, // Use isolated storage for each worker, **important**
           wrangler: {
             configPath: './wrangler.toml',
           },
@@ -23,10 +23,6 @@ export default defineWorkersConfig(async () => {
             bindings: { TEST_MIGRATIONS: migrations },
           },
         },
-      },
-      fileParallelism: false,
-      sequence: {
-        concurrent: false,
       },
     },
   }

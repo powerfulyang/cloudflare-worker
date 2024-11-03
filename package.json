@@ -21,8 +21,8 @@
     "d1:export:remote": "wrangler d1 export littleeleven --remote --output=./remote.sql",
     "tsc-check": "tsc --noEmit",
     "lint": "eslint . --fix",
-    "unit:test": "vitest --run --exclude tests/**/*.e2e.spec.ts",
-    "e2e:test": "vitest --e2e --run tests/**/*.e2e.spec.ts"
+    "unit:test": "vitest --run --exclude tests/e2e",
+    "e2e:test": "vitest --run tests/e2e"
   },
   "dependencies": {
     "@hono/oauth-providers": "^0.6.2",
@@ -40,6 +40,7 @@
     "@cloudflare/vitest-pool-workers": "^0.5.24",
     "@cloudflare/workers-types": "^4.20241022.0",
     "@types/jest": "^29.5.14",
+    "cross-env": "^7.0.3",
     "drizzle-kit": "^0.27.1",
     "eslint": "^9.14.0",
     "npm-run-all": "^4.1.5",

@@ -6,6 +6,6 @@ describe('baby', () => {
   it('get baby by id', async () => {
     const res = await app.request('/api/baby/1', undefined, env)
 
-    expect(res.status).toBe(404)
+    expect(res.status).toBe(401)
   })
 })

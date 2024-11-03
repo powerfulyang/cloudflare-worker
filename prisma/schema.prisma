@@ -4,6 +4,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
+	output = "./client"
 }
 
 // This `datasource` file isn't used but Prisma ORM still requires the `datasource` definition.
