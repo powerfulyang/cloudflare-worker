@@ -36,7 +36,7 @@ export async function uploadFile(file: File) {
   const env = c.env
   const bucketName = c.env.BUCKET_NAME
   const hash = (await sha256(await file.arrayBuffer()))!
-  const db = getDrizzleInstance(env.DB)
+  const db = getDrizzleInstance()
 
   // 判断文件是否已经上传, 使用 head 方法
   const head = await env.BUCKET.head(hash)

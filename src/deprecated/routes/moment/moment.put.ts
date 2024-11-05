@@ -21,7 +21,7 @@ const route = createRoute({
 PutMoment.openapi(route, async (c) => {
   const { id } = c.req.valid('param')
   const { content, attachments } = c.req.valid('json')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   const momentResult = await db
     .update(moment)

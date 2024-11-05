@@ -48,7 +48,7 @@ const route = createRoute({
 
 GetEventLogDistinct.openapi(route, async (c) => {
   const { date } = c.req.valid('query')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   const where: SQL[] = []
   if (date) {

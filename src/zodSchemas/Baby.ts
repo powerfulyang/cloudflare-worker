@@ -1,21 +1,20 @@
+import { BabyOptionalDefaultsSchema, BabyPartialSchema, BabySchema, UserSchema } from '#/prisma/zod'
 import { UploadResult } from '@/zodSchemas/Upload'
 import { z } from '@hono/zod-openapi'
-import { baby } from '~drizzle/schema'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 
-export const BabyResult = createSelectSchema(baby)
+export const BabyResult = BabySchema
   .extend(
     {
       avatar: UploadResult.nullable(),
+      user: UserSchema,
     },
   )
   .openapi('BabyResult')
 
-export const BabyPatch = createInsertSchema(baby)
-  .partial()
+export const BabyPatch = BabyPartialSchema
   .openapi('BabyPatch')
 
-export const BabyPost = createInsertSchema(baby)
+export const BabyPost = BabyOptionalDefaultsSchema
   .openapi('BabyPost')
 
 export const BabyKey = z

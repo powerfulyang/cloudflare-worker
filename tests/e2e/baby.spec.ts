@@ -4,7 +4,7 @@ import { expect } from 'vitest'
 
 describe('baby', () => {
   it('get baby by id', async () => {
-    const res = await app.request('/api/baby/1', undefined, env)
+    const res = await app.request('/api/v1/baby/1', undefined, env)
 
     expect(res.status).toBe(401)
   })

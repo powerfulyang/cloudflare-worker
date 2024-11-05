@@ -23,7 +23,7 @@ const route = createRoute({
 
 DeleteEventLog.openapi(route, async (c) => {
   const { id } = c.req.valid('param')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   await db
     .update(eventLog)

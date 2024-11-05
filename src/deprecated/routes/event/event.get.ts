@@ -12,7 +12,7 @@ const route = createRoute({
 })
 
 GetEvent.openapi(route, async (c) => {
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   const result = await db
     .query

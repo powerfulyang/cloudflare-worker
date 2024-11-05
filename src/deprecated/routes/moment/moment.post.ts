@@ -19,7 +19,7 @@ const route = createRoute({
 
 PostMoment.openapi(route, async (c) => {
   const { content, attachments, type } = c.req.valid('json')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
   let momentResult: { id: number } | null = null
 
   try {

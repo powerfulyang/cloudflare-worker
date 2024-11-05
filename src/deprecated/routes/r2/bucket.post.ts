@@ -18,7 +18,7 @@ const route = createRoute({
 
 PostBucket.openapi(route, async (c) => {
   const { name, domain } = c.req.valid('json')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   const result = await db
     .insert(bucket)

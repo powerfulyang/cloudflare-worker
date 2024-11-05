@@ -27,7 +27,7 @@ const route = createRoute({
 
 QueryMoment.openapi(route, async (c) => {
   const { page, pageSize, type } = c.req.valid('query')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   const totalQuery = await db
     .select({

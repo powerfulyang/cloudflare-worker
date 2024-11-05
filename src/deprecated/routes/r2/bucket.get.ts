@@ -25,7 +25,7 @@ const route = createRoute({
 
 GetBucket.openapi(route, async (c) => {
   const { name } = c.req.valid('param')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   const result = await db.query.bucket.findFirst({
     where: eq(bucket.name, name),

@@ -21,7 +21,7 @@ const route = createRoute({
 
 DeleteMoment.openapi(route, async (c) => {
   const { id } = c.req.valid('param')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   // 先删关联
   await db

@@ -18,7 +18,7 @@ const route = createRoute({
 
 PostEvent.openapi(route, async (c) => {
   const json = c.req.valid('json')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   const result = await db
     .insert(event)

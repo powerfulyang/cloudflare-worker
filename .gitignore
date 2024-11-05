@@ -5,3 +5,4 @@ openapi.json
 .dev.vars
 remote.sql
 prisma/client
+prisma/zod

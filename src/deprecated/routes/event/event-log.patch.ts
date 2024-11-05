@@ -21,7 +21,7 @@ const route = createRoute({
 PatchEventLog.openapi(route, async (c) => {
   const { id } = c.req.valid('param')
   const json = c.req.valid('json')
-  const db = getDrizzleInstance(c.env.DB)
+  const db = getDrizzleInstance()
 
   await db
     .update(eventLog)
