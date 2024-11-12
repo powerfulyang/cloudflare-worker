@@ -1,9 +1,8 @@
+import { MomentOptionalDefaultsSchema, MomentSchema } from '#/prisma/zod'
 import { UploadResult } from '@/zodSchemas/Upload'
 import { z } from '@hono/zod-openapi'
-import { moment } from '~drizzle/schema/moment'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 
-export const Moment = createSelectSchema(moment)
+export const Moment = MomentSchema
   .extend({
     attachments: z.array(
       z.object({
@@ -13,7 +12,7 @@ export const Moment = createSelectSchema(moment)
   })
   .openapi('Moment')
 
-export const MomentPost = createInsertSchema(moment)
+export const MomentPost = MomentOptionalDefaultsSchema
   .extend({
     attachments: z.array(
       z.object({
@@ -23,7 +22,7 @@ export const MomentPost = createInsertSchema(moment)
   })
   .openapi('MomentPost')
 
-export const MomentPut = createInsertSchema(moment)
+export const MomentPut = MomentOptionalDefaultsSchema
   .pick({ content: true })
   .extend({
     attachments: z.array(

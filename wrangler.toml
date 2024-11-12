@@ -19,8 +19,5 @@ r2_buckets = [ { binding = "BUCKET", bucket_name = "littleeleven" } ]
 [triggers]
 crons = []
 
-[placement]
-mode = "smart"
-
 [observability]
 enabled = true

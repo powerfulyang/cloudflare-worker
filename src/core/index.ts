@@ -4,8 +4,6 @@ import type { BabyService } from '@/service/baby.service'
 import { PrismaClient } from '#/prisma/client'
 import { OpenAPIHono } from '@hono/zod-openapi'
 import { PrismaD1 } from '@prisma/adapter-d1'
-import * as schema from '~drizzle/schema'
-import { drizzle } from 'drizzle-orm/d1'
 import { getContext } from 'hono/context-storage'
 
 export function getCtx() {
@@ -14,14 +12,6 @@ export function getCtx() {
 
 export function getD1() {
   return getCtx().env.DB
-}
-
-export function getDrizzleInstance() {
-  const d1 = getD1()
-  return drizzle(d1, {
-    schema,
-    logger: true,
-  })
 }
 
 export function getPrismaInstance() {

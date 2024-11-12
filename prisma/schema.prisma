@@ -7,10 +7,6 @@ generator client {
   output          = "./client"
 }
 
-generator erd {
-  provider = "prisma-erd-generator"
-}
-
 generator zod {
   output                           = "./zod"
   provider                         = "zod-prisma-types"
@@ -52,68 +48,10 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  babies    Baby[]
-  events    Event[]
-  eventLogs EventLog[]
   moments   Moment[]
   uploads   Upload[]
-  Bucket    Bucket[]
 
   @@map("users")
-}
-
-model Baby {
-  id        Int      @id @default(autoincrement())
-  name      String
-  bornAt    DateTime
-  gender    Int      @default(0)
-  avatar    Upload?  @relation(fields: [avatarId], references: [id])
-  avatarId  Int?
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // User relation
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-
-  @@map("babies")
-}
-
-model Event {
-  id          Int        @id @default(autoincrement())
-  name        String     @unique
-  displayName String
-  icon        String
-  extraFields String     @default("[]")
-  deleted     Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  eventLogs   EventLog[]
-
-  // User relation
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-
-  @@map("events")
-}
-
-model EventLog {
-  id        Int      @id @default(autoincrement())
-  event     Event    @relation(fields: [eventName], references: [name])
-  eventName String
-  comment   String   @default("")
-  extra     String   @default("{}")
-  eventTime DateTime @default(now())
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // User relation
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-
-  @@map("event_logs")
 }
 
 model Moment {
@@ -144,34 +82,16 @@ model MomentsToUploads {
   @@map("moments_to_uploads")
 }
 
-model Bucket {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  domain    String
-  uploads   Upload[]
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // User relation
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-
-  @@map("buckets")
-}
-
 model Upload {
   id            Int      @id @default(autoincrement())
   hash          String
   thumbnailHash String   @default("")
-  bucket        Bucket   @relation(fields: [bucketName], references: [name])
   bucketName    String
   mediaType     String
   deleted       Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  Baby    Baby[]
   moments MomentsToUploads[]
 
   // User relation

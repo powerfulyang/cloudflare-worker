@@ -1,9 +1,4 @@
-import { BucketResult } from '@/zodSchemas/Bucket'
-import { upload } from '~drizzle/schema'
-import { createSelectSchema } from 'drizzle-zod'
+import { UploadSchema } from '#/prisma/zod'
 
-export const UploadResult = createSelectSchema(upload)
-  .extend({
-    bucket: BucketResult,
-  })
+export const UploadResult = UploadSchema
   .openapi('UploadResult')
