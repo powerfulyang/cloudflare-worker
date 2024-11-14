@@ -4,7 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineWorkersConfig(async () => {
   // Read all migrations in the `migrations` directory
-  const migrationsPath = join(__dirname, 'drizzle')
+  const migrationsPath = join(__dirname, 'migrations')
   const migrations = await readD1Migrations(migrationsPath)
   return {
     plugins: [tsconfigPaths()],

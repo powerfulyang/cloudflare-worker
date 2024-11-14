@@ -1,6 +1,5 @@
 import type { User } from '#/prisma/client'
 import type { AuthService } from '@/service/auth.service'
-import type { BabyService } from '@/service/baby.service'
 import { PrismaClient } from '#/prisma/client'
 import { OpenAPIHono } from '@hono/zod-openapi'
 import { PrismaD1 } from '@prisma/adapter-d1'
@@ -23,7 +22,6 @@ export function getPrismaInstance() {
 export interface AppEnv {
   Bindings: Bindings
   Variables: {
-    babyService: BabyService
     authService: AuthService
     user: User
   }

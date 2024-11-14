@@ -1,7 +1,7 @@
-import BabyRoute from '@/routes/baby'
+import User from '@/routes/user'
 import app from '@/server'
 import '@/oauth-providers/oauth.middleware'
 
-app.route('baby', BabyRoute)
+app.route('/', User)
 
 export default app

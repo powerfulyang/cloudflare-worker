@@ -1,7 +1,6 @@
 import { version } from '#/package.json'
 import { getAppInstance } from '@/core'
 import { AuthService } from '@/service/auth.service'
-import { BabyService } from '@/service/baby.service'
 import { z } from '@hono/zod-openapi'
 import { every } from 'hono/combine'
 import { contextStorage } from 'hono/context-storage'
@@ -42,7 +41,6 @@ app.use(
 
 // service middleware
 app.use('*', async (ctx, next) => {
-  ctx.set('babyService', new BabyService())
   ctx.set('authService', new AuthService())
   await next()
 })
