@@ -1,6 +1,7 @@
 import type { CookieOptions } from 'hono/utils/cookie'
 import app from '@/server'
 import { AuthType } from '@/service/auth.service'
+import { isAllowedOrigin } from '@/utils'
 import { discordAuth } from '@hono/oauth-providers/discord'
 import { githubAuth } from '@hono/oauth-providers/github'
 import { googleAuth } from '@hono/oauth-providers/google'
@@ -17,14 +18,27 @@ const COOKIE_OPTIONS = {
 } as CookieOptions
 
 // 鉴权中间件
-app.use('*', async (c, next) => {
+app.use('*', async (ctx, next) => {
   // 跳过登录相关路由
-  if (c.req.path.startsWith('/api/auth/')) {
+  if (ctx.req.path.startsWith('/api/auth/')) {
+    const _redirect = ctx.req.query('_redirect')
+    if (_redirect) {
+      // check 是不是白名单域名
+      const url = new URL(_redirect)
+      if (isAllowedOrigin(url.origin)) {
+        setCookie(ctx, '_redirect', _redirect)
+      }
+      else {
+        throw new HTTPException(403, {
+          message: 'Source domain is not allowed',
+        })
+      }
+    }
     return next()
   }
 
-  const token = getCookie(c, COOKIE_NAME)
-  const authService = c.get('authService')
+  const token = getCookie(ctx, COOKIE_NAME)
+  const authService = ctx.get('authService')
 
   if (!token) {
     throw new HTTPException(401, {
@@ -33,7 +47,7 @@ app.use('*', async (c, next) => {
   }
 
   const user = await authService.verifyJwt(token)
-  c.set('user', user)
+  ctx.set('user', user)
   return next()
 })
 
@@ -41,16 +55,22 @@ app.get(
   'auth/google',
   googleAuth({
     scope: ['email', 'profile'],
+    prompt: 'select_account',
   }),
-  async (c) => {
-    const googleUser = c.get('user-google')
-    const authService = c.get('authService')
+  async (ctx) => {
+    const googleUser = ctx.get('user-google')
+    const authService = ctx.get('authService')
     const { user, token } = await authService.login(AuthType.GOOGLE, googleUser)
 
     // set cookie
-    setCookie(c, COOKIE_NAME, token, COOKIE_OPTIONS)
+    setCookie(ctx, COOKIE_NAME, token, COOKIE_OPTIONS)
 
-    return c.json({
+    const redirect = getCookie(ctx, '_redirect')
+    if (redirect) {
+      return authService.generateTicketAndRedirect(user, redirect)
+    }
+
+    return ctx.json({
       user,
       token,
     })
@@ -62,15 +82,20 @@ app.get(
   discordAuth({
     scope: ['identify', 'email'],
   }),
-  async (c) => {
-    const discordUser = c.get('user-discord')
-    const authService = c.get('authService')
+  async (ctx) => {
+    const discordUser = ctx.get('user-discord')
+    const authService = ctx.get('authService')
     const { user, token } = await authService.login(AuthType.DISCORD, discordUser)
 
     // set cookie
-    setCookie(c, COOKIE_NAME, token, COOKIE_OPTIONS)
+    setCookie(ctx, COOKIE_NAME, token, COOKIE_OPTIONS)
 
-    return c.json({
+    const redirect = getCookie(ctx, '_redirect')
+    if (redirect) {
+      return authService.generateTicketAndRedirect(user, redirect)
+    }
+
+    return ctx.json({
       user,
       token,
     })
@@ -81,18 +106,36 @@ app.get(
   'auth/github',
   githubAuth({
     scope: ['user:email'],
+    oauthApp: true,
   }),
-  async (c) => {
-    const githubUser = c.get('user-github')
-    const authService = c.get('authService')
+  async (ctx) => {
+    const githubUser = ctx.get('user-github')
+    const authService = ctx.get('authService')
     const { user, token } = await authService.login(AuthType.GITHUB, githubUser)
 
     // set cookie
-    setCookie(c, COOKIE_NAME, token, COOKIE_OPTIONS)
+    setCookie(ctx, COOKIE_NAME, token, COOKIE_OPTIONS)
 
-    return c.json({
+    const redirect = getCookie(ctx, '_redirect')
+    if (redirect) {
+      return authService.generateTicketAndRedirect(user, redirect)
+    }
+
+    return ctx.json({
       user,
       token,
     })
   },
 )
+
+app.get('auth/by-ticket', async (ctx) => {
+  const ticket = ctx.req.query('ticket')
+  const authService = ctx.get('authService')
+  const token = await authService.checkOnceTicket(ticket)
+  if (!token) {
+    throw new HTTPException(404)
+  }
+  return ctx.json({
+    token,
+  })
+})

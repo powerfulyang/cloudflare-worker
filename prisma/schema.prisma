@@ -37,7 +37,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   email     String   @unique
   nickname  String?
   avatar    String?
@@ -47,56 +47,5 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
-  moments   Moment[]
-  uploads   Upload[]
-
   @@map("users")
-}
-
-model Moment {
-  id          Int                @id @default(autoincrement())
-  type        String             @default("moment")
-  content     String             @default("")
-  attachments MomentsToUploads[]
-  deleted     Boolean            @default(false)
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-
-  // User relation
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-
-  @@map("moments")
-}
-
-model MomentsToUploads {
-  moment   Moment  @relation(fields: [momentId], references: [id])
-  momentId Int
-  upload   Upload  @relation(fields: [uploadId], references: [id])
-  uploadId Int
-  sort     Int     @default(0)
-  deleted  Boolean @default(false)
-
-  @@unique([momentId, uploadId], name: "unique_moment_upload")
-  @@map("moments_to_uploads")
-}
-
-model Upload {
-  id            Int      @id @default(autoincrement())
-  hash          String
-  thumbnailHash String   @default("")
-  bucketName    String
-  mediaType     String
-  deleted       Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  moments MomentsToUploads[]
-
-  // User relation
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-
-  @@map("uploads")
 }

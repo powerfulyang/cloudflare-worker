@@ -1,9 +1,8 @@
 declare global {
   interface Bindings {
     DB: D1Database
-    BUCKET: R2Bucket
-    ENVIRONMENT: 'staging' | 'production'
-    BUCKET_NAME: string
+    KV: KVNamespace
+    ENVIRONMENT: 'local' | 'production'
     JWT_SECRET: string
   }
 }

@@ -27,30 +27,32 @@ Set the `d1_database` field in `wrangler.toml` to your database information (**r
 Example:
 
 ```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "<database-name>"
-database_id = "<database-id>"
+d1_databases = [ { binding = "DB", database_name = "littleeleven", database_id = "c6ca0e33-ea58-48d3-b779-a21f9a063812" }, ]
 ```
 
 ### Sync table structure
 
-Sync the sql files of `drizzle`, execute the following command using `d1 execute` command
+Sync the sql files of `drizzle`, execute the following command (**required**)
 
 ```bash
-wrangler d1 execute eleven --file .\drizzle\0000_reflective_dracula.sql
+wrangler d1 migrations apply littleeleven --local
 ```
 
-### Configure R2 bucket
+### Manage the secret variables for oauth providers
 
-Set the `r2_bucket` field in `wrangler.toml` to your bucket information (**required**)
+> Related documentation: https://developers.cloudflare.com/workers/wrangler/commands/#secret
 
-Example:
+```bash
+wrangler secret put JWT_SECRET
 
-```toml
-[[r2_buckets]]
-binding = "BUCKET"
-bucket_name = "<bucket-name>"
+wrangler secret put GOOGLE_ID
+wrangler secret put GOOGLE_SECRET
+
+wrangler secret put GITHUB_ID
+wrangler secret put GITHUB_SECRET
+
+wrangler secret put DISCORD_ID
+wrangler secret put DISCORD_SECRET
 ```
 
 ## Start local development server

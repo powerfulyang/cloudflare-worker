@@ -12,10 +12,10 @@ const route = createRoute({
   responses: JsonResponse(UserResult),
 })
 
-GetCurrentUser.openapi(route, async (c) => {
-  const user = c.get('user')
+GetCurrentUser.openapi(route, async (ctx) => {
+  const user = ctx.get('user')
 
-  return c.json(user)
+  return ctx.json(user)
 })
 
 export default GetCurrentUser

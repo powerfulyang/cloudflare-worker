@@ -1,5 +1,6 @@
 import type { User } from '#/prisma/client'
 import type { AuthService } from '@/service/auth.service'
+import type { RequestIdVariables } from 'hono/request-id'
 import { PrismaClient } from '#/prisma/client'
 import { OpenAPIHono } from '@hono/zod-openapi'
 import { PrismaD1 } from '@prisma/adapter-d1'
@@ -24,7 +25,7 @@ export interface AppEnv {
   Variables: {
     authService: AuthService
     user: User
-  }
+  } & RequestIdVariables
 }
 
 export function getAppInstance() {

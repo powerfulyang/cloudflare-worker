@@ -1,6 +1,7 @@
 import { version } from '#/package.json'
 import { getAppInstance } from '@/core'
 import { AuthService } from '@/service/auth.service'
+import { isAllowedOrigin } from '@/utils'
 import { z } from '@hono/zod-openapi'
 import { every } from 'hono/combine'
 import { contextStorage } from 'hono/context-storage'
@@ -24,10 +25,9 @@ app.use(
     logger(),
     cors({
       origin: (origin) => {
-        if (origin.endsWith('.littleeleven.com')) {
+        if (isAllowedOrigin(origin)) {
           return origin
         }
-        return 'https://littleeleven.com'
       },
       allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
       exposeHeaders: ['authorization'],

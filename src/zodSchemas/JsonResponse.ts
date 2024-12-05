@@ -22,7 +22,9 @@ export const InternalServerError = {
   },
 }
 
-export function JsonResponse<T>(schema: T) {
+export function JsonResponse<T>(
+  schema: T,
+) {
   return {
     200: {
       description: 'OK',
@@ -32,6 +34,5 @@ export function JsonResponse<T>(schema: T) {
         },
       },
     },
-    // 500: InternalServerError,
   }
 }

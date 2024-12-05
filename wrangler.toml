@@ -4,10 +4,10 @@ compatibility_date = "2024-10-22"
 compatibility_flags = [ "nodejs_compat" ]
 
 # env
-vars = { ENVIRONMENT = "production", BUCKET_NAME = "littleeleven" }
+vars = { ENVIRONMENT = "production" }
 route = { pattern = "api.littleeleven.com", custom_domain = true }
 d1_databases = [ { binding = "DB", database_name = "littleeleven", database_id = "c6ca0e33-ea58-48d3-b779-a21f9a063812" }, ]
-r2_buckets = [ { binding = "BUCKET", bucket_name = "littleeleven" } ]
+kv_namespaces = [ { binding = "KV", id = "6d9993c9ecc844549f592d1d89a5f177" } ]
 
 [triggers]
 crons = []
